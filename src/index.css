@@ -1,0 +1,19 @@
+/* ./src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        @apply h-full
+    }
+    body {
+        @apply bg-gray-100 h-full
+    }
+    #app {
+        @apply h-full
+    }
+    h1 {
+        @apply text-4xl my-4
+    }
+}
