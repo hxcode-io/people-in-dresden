@@ -5,13 +5,13 @@
 
 @layer base {
     html {
-        @apply h-full
+        @apply min-h-full
     }
     body {
-        @apply bg-gray-100 h-full
+        @apply bg-gray-100 min-h-full
     }
     #app {
-        @apply h-full
+        @apply min-h-full
     }
     h1 {
         @apply text-4xl my-4
