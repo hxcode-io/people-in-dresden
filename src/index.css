@@ -3,20 +3,39 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
+    @font-face {
+        font-family: 'MarcellusSC';
+        src: url(./assets/fonts/MarcellusSC-Regular.ttf) format("truetype");
+    }
     html {
-        @apply min-h-full
+        @apply min-h-full;
     }
     body {
-        @apply bg-gray-100 min-h-full
+        @apply bg-gray-100 min-h-full;
     }
     #app {
-        @apply min-h-full
+        @apply min-h-full;
     }
     h1 {
-        @apply text-4xl my-4
+        @apply text-4xl my-2;
+        @apply font-marc;
     }
     h2 {
-        @apply text-xl my-2
+        @apply text-xl my-2;
+        @apply font-marc;
+    }
+   
+}
+
+@layer utilities {
+    @variants responsive {
+        .masonry-3-col {
+            column-count: 3;
+        }
+        .masonry-2-col {
+            column-count: 2;
+        }
     }
 }

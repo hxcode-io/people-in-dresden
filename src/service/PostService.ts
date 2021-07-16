@@ -18,17 +18,17 @@ export class PostService {
       return {
         imgSrc: this.extractImageSrc(jsonPost),
         text: this.extractText(jsonPost),
-        published_at: new Date()
+        published_at: new Date() // TODO
       }
     });
   }
 
-  extractImageSrc(jsonPost: any): string {
+  private extractImageSrc(jsonPost: any): string {
     const uri = jsonPost.attachments[0].data[0].media.uri;
     return "/images/" + uri.slice(uri.lastIndexOf("/")).slice(1)
   }
 
-  extractText(jsonPost: any): PostText {
+  private extractText(jsonPost: any): PostText {
     const text = this.decodeText(jsonPost.data[0].post as string);
     return {
       de: text.slice(0, text.indexOf("\n--\n")),
@@ -36,7 +36,7 @@ export class PostService {
     }
   }
 
-  decodeText(text: string): string {
+  private decodeText(text: string): string {
     let textDecode = text.replaceAll("\u00c3\u00a4", "ä")
     textDecode = textDecode.replaceAll("\u00c3\u00bc", "ü")
     textDecode = textDecode.replaceAll("\u00c3\u00b6", "ö")
