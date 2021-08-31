@@ -1,7 +1,7 @@
 <template>
   <div class="pt-0 rounded transform hover:shadow-xl hover:-translate-y-1 hover:translate-x-1 transition-all">
     <div class="cursor-pointer" @click="openModal">
-      <img :src="post.imgSrc" :alt="post.text.de.slice(0, 20)" class="w-100 rounded-t">
+      <img :src="post.imgSrc" :alt="lang === 'de' ? post.text.de.slice(0, 20) : post.text.en.slice(0,20)" class="w-100 rounded-t">
     </div>
     <div class="px-10 py-4 bg-white shadow-sm border-t-8 border-dd">
       <transition name="fade" mode="out-in">
