@@ -1,6 +1,7 @@
 <template>
   <div class="modal modal-active fixed h-full top-0 left-0 flex items-center justify-center"
-        :class="modalActive ? 'modal-active' : 'opacity-0 pointer-events-none'">
+        :class="openModal ? 'modal-active' : 'opacity-0 pointer-events-none'">
+
     <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
     
     <div class="modal-container bg-white h-screen w-screen px-8 py-16 shadow-lg z-50">
@@ -16,26 +17,30 @@
       </div>
 
       <div class="modal-content container mx-auto pt-2 overflow-y-auto">
-        <!--Title-->
-
-        <!--Body-->
-        <div class="grid grid-cols-1 lg:grid-cols-2" v-if="post">
-          <div  class="px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-10 gap-24 mb-6" v-if="post">
+          <div class="lg:col-span-6">
             <img :src="post.imgSrc" :alt="post.text.de.slice(0, 20)" class="w-100 rounded">
           </div>
-          <div class="px-4">
+          <div class="lg:col-span-4 mr-4 text-gray-700" style="line-height: 27px;">
             <transition name="fade" mode="out-in">
-              <p class="whitespace-pre-line my-2" v-if="lang === 'de'">
-                {{ post.text.de }}
-              </p>
-              <p class="whitespace-pre-line my-2" v-else>
-                {{ post.text.en }}
-              </p>
+              <div>
+                <p class="whitespace-pre-line" v-if="lang === 'de'">
+                  {{ post.text.de }}
+                </p>
+                <p class="whitespace-pre-line" v-else>
+                  {{ post.text.en }}
+                </p>
+                <div class="flex justify-between mt-6 text-gray-400">
+                  <span>12. August 20021</span>
+                  <span class="hover:underline cursor-pointer">
+                    <span v-if="lang === 'de'" @click.stop="$emit('toggleLangEn')">English version</span>
+                    <span v-if="lang === 'en'" @click.stop="$emit('toggleLangDe')">Deutsche version</span>
+                  </span>
+                </div>
+              </div>
             </transition>
           </div>
-          
         </div>
-        
       </div>
     </div>
   </div>
@@ -49,7 +54,7 @@ export default defineComponent({
   name: 'Modal',
   setup() {
     return {
-      modalActive: false
+      // modalActive: false
     }
   },
   props: {
@@ -62,25 +67,8 @@ export default defineComponent({
   },
   methods: {
     toggleModal() {
-      this.modalActive = false;
       this.$emit('closeModal');
-    },
-    escapeHandler(event: any) {
-      if(event.key === 'Escape') {
-        this.toggleModal();
-      }
     }
-  },
-  watch: {
-    openModal: function(val) {
-      this.modalActive = val;
-    }
-  },
-  mounted() {
-    document.body.addEventListener('keyup', this.escapeHandler);
-  },
-  destroyed() {
-    document.body.removeEventListener('keyup', this.escapeHandler);
   }
 })
 </script>

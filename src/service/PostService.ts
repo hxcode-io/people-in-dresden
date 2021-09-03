@@ -48,6 +48,7 @@ export class PostService {
     textDecode = textDecode.replaceAll("\u00c3\u00a9", "é")
     textDecode = textDecode.replaceAll("\u00e2\u0080\u009d", "“")
     textDecode = textDecode.replaceAll("\u00e2\u0080\u009c", "”")
+    textDecode = textDecode.replaceAll("\u00e2\u0080\u009e", "„")
     return textDecode;
   }
 
