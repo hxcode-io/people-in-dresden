@@ -1,4 +1,5 @@
-import json from '../posts_1.json';
+import json1 from '../posts_1.json';
+import json2 from '../posts_2.json';
 
 export interface PostText {
   de: string;
@@ -13,19 +14,20 @@ export interface Post {
 
 export class PostService {
 
-  getPosts(): Array<Post> {
+  getPosts(idx: number): Array<Post> {
+    const json = idx === 1 ? json1 : json2;
     return (json as Array<object>).map((jsonPost: any) => {
       return {
-        imgSrc: this.extractImageSrc(jsonPost),
+        imgSrc: this.extractImageSrc(jsonPost, idx),
         text: this.extractText(jsonPost),
         published_at: new Date(jsonPost.timestamp * 1000)
       }
     });
   }
 
-  private extractImageSrc(jsonPost: any): string {
+  private extractImageSrc(jsonPost: any, idx: number): string {
     const uri = jsonPost.attachments[0].data[0].media.uri;
-    return "/images/" + uri.slice(uri.lastIndexOf("/")).slice(1)
+    return "/images/" + idx + "/" + uri.slice(uri.lastIndexOf("/")).slice(1)
   }
 
   private extractText(jsonPost: any): PostText {
