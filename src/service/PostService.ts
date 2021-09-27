@@ -14,11 +14,11 @@ export interface Post {
 export class PostService {
 
   getPosts(): Array<Post> {
-    return (json as Array<object>).map(jsonPost => {
+    return (json as Array<object>).map((jsonPost: any) => {
       return {
         imgSrc: this.extractImageSrc(jsonPost),
         text: this.extractText(jsonPost),
-        published_at: new Date() // TODO
+        published_at: new Date(jsonPost.timestamp * 1000)
       }
     });
   }
