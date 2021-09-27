@@ -1,5 +1,6 @@
 import json1 from '../posts_1.json';
 import json2 from '../posts_2.json';
+import json3 from '../posts_3.json';
 
 export interface PostText {
   de: string;
@@ -15,7 +16,9 @@ export interface Post {
 export class PostService {
 
   getPosts(idx: number): Array<Post> {
-    const json = idx === 1 ? json1 : json2;
+    let json: any = json1;
+    if (idx === 2) json = json2;
+    if (idx === 3) json = json3;
     return (json as Array<object>).map((jsonPost: any) => {
       return {
         imgSrc: this.extractImageSrc(jsonPost, idx),

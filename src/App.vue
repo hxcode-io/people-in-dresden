@@ -77,7 +77,7 @@ export default defineComponent({
   },
   setup: () => {
     return {
-      posts: new PostService().getPosts(2),
+      posts: new PostService().getPosts(3),
       lang: ref('en'),
       activePost: ref<Post | undefined>(),
       modalOpened: ref(false),
