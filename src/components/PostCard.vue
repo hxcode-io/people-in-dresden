@@ -14,7 +14,7 @@
       </transition>
       <button v-if="readmore"
               @click="openModal"
-              class="py-2 px-4 mt-2 transition-all font-semibold border-l-4 hover:border-dd bg-gray-100 hover:bg-gray-200">
+              class="mt-2 font-semibold">
         <span v-if="lang === 'de'">Weiterlesen...</span>
         <span v-else>Read more...</span>
       </button>

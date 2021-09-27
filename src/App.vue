@@ -1,20 +1,54 @@
 <template>
   <div class="mx-auto h-full w-full pb-8 border-b-8 hover:translate-x-2" :class="{ 'pt-8 border-t-8': !banner }">
-    <div v-if="banner" class="mb-16">
-      <img src="https://images.unsplash.com/photo-1494935362342-566c6d6e75b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80"
-           class="w-full" style="height: 40vh; object-fit: cover;" alt="big header">
-    </div>
-    <div v-if="banner" class="-mt-24 mb-16 text-black flex justify-center">
-      <div class="bg-gray-200 hover:bg-gray-300 h-16 w-16 text-center flex items-center justify-center rounded-full shadow" @click="scroll">
-        <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.83265 12.5968L0.343249 3.1073C-0.114417 2.64963 -0.114417 1.90764 0.343249 1.45003L1.45004 0.343238C1.90692 -0.113646 2.6474 -0.114526 3.10536 0.341285L10.6613 7.86184L18.2172 0.341285C18.6752 -0.114526 19.4157 -0.113646 19.8725 0.343238L20.9793 1.45003C21.437 1.90769 21.437 2.64968 20.9793 3.1073L11.49 12.5968C11.0323 13.0544 10.2903 13.0544 9.83265 12.5968Z" fill="#333333"/>
-        </svg>
+    <div v-if="banner" class="mb-16 border-b-8 border-dd" style="height: 100vh;">
+      <!-- <img src="/images/denis-jung-ybG6toJN3iE-unsplash.jpg"
+           class="w-full h-full" style="object-fit: cover;" alt="big header"> -->
+      <img src="/images/nicole-kurtze--Yvw4_mrjcI-unsplash.jpg"
+           class="w-full h-full" style="object-fit: cover;" alt="big header">
+      <div class="overlay bg-black z-10 absolute top-0 opacity-20 h-full w-full"></div>
+      <div class="header-content absolute top-0 w-full h-full z-20">
+        <div class="header-logo flex justify-center items-center h-full flex-col">
+          <div class="text-white font-marc" style="font-size: 100px;">
+            People in Dresden
+          </div>
+          <div class="bg-gray-200 rounded font-marc text-center px-12 py-1" style="font-size: 45px;">
+            Stories from the city of Dresden
+          </div>
+        </div>
+        <div class="header-navigation flex justify-evenly items-center absolute bottom-2 w-full bg-black bg-opacity-40">
+          <div class="navigation-group font-marc">
+            <a href="">Team</a>
+          </div>
+          <div class="navigation-group font-marc">
+            <a href="">Presse</a>
+          </div>
+          <div class="bg-gray-200 hover:bg-dd cursor-pointer h-12 w-12  flex items-center justify-center rounded-full" @click="scroll">
+            <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.83265 12.5968L0.343249 3.1073C-0.114417 2.64963 -0.114417 1.90764 0.343249 1.45003L1.45004 0.343238C1.90692 -0.113646 2.6474 -0.114526 3.10536 0.341285L10.6613 7.86184L18.2172 0.341285C18.6752 -0.114526 19.4157 -0.113646 19.8725 0.343238L20.9793 1.45003C21.437 1.90769 21.437 2.64968 20.9793 3.1073L11.49 12.5968C11.0323 13.0544 10.2903 13.0544 9.83265 12.5968Z" fill="#333333"/>
+            </svg>
+          </div>
+          <div class="navigation-group font-marc">
+            <a href="">Mission</a>
+          </div>
+          <div class="navigation-group font-marc">
+            <a href="">Stadt</a>
+          </div>
+        </div>
       </div>
+    </div>
+    <div v-if="banner" class="mb-16 text-black flex justify-center z-20">
     </div>
     <div class="container mx-auto">
       <!-- <dd-header></dd-header> -->
       <div class="grid grid-cols-3 mb-4">
         <div class="font-marc flex items-center">
+          <!-- TODO: 
+                Seiten: Team, Mission, Presse
+                UI optimieren: button header (?) slogan
+                load more button
+                animationstool
+                Datum
+          -->
           <!-- <button class="btn">
             Team
           </button>
@@ -139,7 +173,7 @@ export default defineComponent({
 }
 
 .masonry { /* Masonry container */
-  column-gap: 2em;
+  column-gap: 3em;
 }
 
 .masonry-item { /* Masonry bricks or child elements */
@@ -147,4 +181,9 @@ export default defineComponent({
   width: 100%;
 }
 
+.navigation-group {
+  font-size: 36px;
+  color: white;
+  @apply py-2 px-4 rounded hover:text-dd;
+}
 </style>
