@@ -79,13 +79,16 @@
         </div>
       </div>
       <div class="masonry lg:masonry-3-col md:masonry-2-col">
-        <post-card v-for="post in posts"
+        <post-card v-for="post in orderedPosts"
                    :key="post.text.de"
                    :post="post"
                    :lang="lang"
                    :readmore="readmore"
                    @openModal="openModal"
                    class="my-6 masonry-item"/>
+      </div>
+      <div v-if="idx < 3" class="text-center">
+        <span @click="loadMore()">Load more ...</span>
       </div>
     </div>
     <modal :openModal="modalOpened"
@@ -98,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref} from 'vue'
+import {computed, defineComponent, ref} from 'vue'
 import PostCard from './components/PostCard.vue'
 import {Post, PostService} from "./service/PostService";
 import Modal from './components/Modal.vue';
@@ -110,8 +113,13 @@ export default defineComponent({
     Modal
   },
   setup: () => {
+    const idx = ref(1);
+    const posts = ref(new PostService().getPosts(idx.value));
+    const orderedPosts = computed(() => [...posts.value].sort((a, b) => a.published_at.getTime() - b.published_at.getTime()))
     return {
-      posts: new PostService().getPosts(3),
+      idx,
+      posts,
+      orderedPosts,
       lang: ref('en'),
       activePost: ref<Post | undefined>(),
       modalOpened: ref(false),
@@ -145,6 +153,10 @@ export default defineComponent({
     scroll() {
       const element: HTMLElement | undefined = this.$refs["title"] as HTMLElement;
       element.scrollIntoView({behavior: "smooth"});
+    },
+    loadMore() {
+      this.idx = this.idx + 1;
+      this.posts.push(...(new PostService().getPosts(this.idx)))
     }
   },
 })
