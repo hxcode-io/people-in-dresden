@@ -98,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import { defineComponent, ref} from 'vue'
 import PostCard from './components/PostCard.vue'
 import {Post, PostService} from "./service/PostService";
 import Modal from './components/Modal.vue';

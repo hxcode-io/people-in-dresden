@@ -31,11 +31,11 @@
                   {{ post.text.en }}
                 </p>
                 <div class="flex justify-between mt-6 text-gray-400">
-                  <span>{{ post.published_at }}</span>
-                  <span class="hover:underline cursor-pointer">
-                    <span v-if="lang === 'de'" @click.stop="$emit('toggleLangEn')">English version</span>
-                    <span v-if="lang === 'en'" @click.stop="$emit('toggleLangDe')">Deutsche version</span>
-                  </span>
+                  <span>{{ post.published_at.toLocaleDateString(localeForDate, optionsForDate) }}</span>
+<!--                  <span class="hover:underline cursor-pointer">-->
+<!--                    <span v-if="lang === 'de'" @click.stop="$emit('toggleLangEn')">English version</span>-->
+<!--                    <span v-if="lang === 'en'" @click.stop="$emit('toggleLangDe')">Deutsche version</span>-->
+<!--                  </span>-->
                 </div>
               </div>
             </transition>
@@ -47,16 +47,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import {computed, defineComponent, PropType} from 'vue'
 import { Post } from '../service/PostService';
 
 export default defineComponent({
   name: 'Modal',
-  setup() {
+  setup(props) {
+    const localeForDate = computed<string>(() => props.lang === "de" ? "de-DE" : "en-EN" )
     return {
-      // modalActive: false
+      localeForDate,
+      optionsForDate: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
     }
   },
+  options: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
   props: {
     post: Object as PropType<Post>,
     lang: {

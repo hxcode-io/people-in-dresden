@@ -12,19 +12,20 @@
           {{ post.text.en.substring(1,350) + '...' }}
         </p>
       </transition>
-      <button v-if="readmore"
-              @click="openModal"
-              class="mt-2 font-semibold">
-        <span v-if="lang === 'de'">Weiterlesen...</span>
-        <span v-else>Read more...</span>
-      </button>
-    </div>
 
+      <div class="flex justify-between items-center mt-6 text-gray-400">
+        <span v-if="readmore" @click="openModal" class="font-semibold">
+          <span v-if="lang === 'de'">Weiterlesen...</span>
+          <span v-else>Read more...</span>
+        </span>
+        <span>{{ post.published_at.toLocaleDateString(localeForDate, optionsForDate) }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import {computed, defineComponent, PropType} from 'vue'
 import { Post } from '../service/PostService'
 
 export default defineComponent({
@@ -41,6 +42,13 @@ export default defineComponent({
     readmore: {
       type: Boolean,
       required: true
+    }
+  },
+  setup(props) {
+    const localeForDate = computed<string>(() => props.lang === "de" ? "de-DE" : "en-EN" )
+    return {
+      localeForDate,
+      optionsForDate: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
     }
   },
   methods: {
