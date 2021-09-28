@@ -4,6 +4,7 @@
       <img :src="post.imgSrc" :alt="lang === 'de' ? post.text.de.slice(0, 20) : post.text.en.slice(0,20)" class="w-100 rounded-t">
     </div>
     <div class="px-10 py-4 bg-white shadow-sm border-t-8 border-dd">
+      <span class="text-gray-400">{{ post.published_at.toLocaleDateString(localeForDate, optionsForDate) }}</span>
       <transition name="fade" mode="out-in">
         <p class="whitespace-pre-line my-2" v-if="lang === 'de'">
           {{ post.text.de.substring(1,350) + '...' }}
@@ -13,12 +14,11 @@
         </p>
       </transition>
 
-      <div class="flex justify-between items-center mt-6 text-gray-400">
+      <div class="flex justify-between items-center my-4 text-gray-400">
         <span v-if="readmore" @click="openModal" class="font-semibold">
           <span v-if="lang === 'de'">Weiterlesen...</span>
           <span v-else>Read more...</span>
         </span>
-        <span>{{ post.published_at.toLocaleDateString(localeForDate, optionsForDate) }}</span>
       </div>
     </div>
   </div>

@@ -37,18 +37,15 @@
       </div>
     </div>
     <transition name="fade" mode="out-in">
-      <div class="fixed-nav fixed z-50 top-0 w-full bg-gray-100 py-1" v-if="fixedHeader">
-        <div class="grid grid-cols-3 container mx-auto">
-          <div class="font-marc flex items-center">
+      <div class="fixed-nav fixed z-50 top-0 w-full bg-gray-100 py-1 md" v-if="fixedHeader">
+        <div class="grid md:grid-cols-3 grid-cols-2  container mx-auto">
+          <div class="font-marc items-center hidden md:flex">
             <!-- TODO: 
-                  Seiten: Team, Mission, Presse
-                  UI optimieren: button header (?) slogan
-                  load more button
                   animationstool (?)
-                  Datum
-                  mobile ansicht
+                  mobile ansicht, slider
+                  masonry
             -->
-            <button class="btn ">
+            <button class="btn">
               TEAM
             </button>
             <button class="btn ml-1">
@@ -61,8 +58,17 @@
               STADT
             </button>
           </div>
-          <div ref="title">
+          <div ref="title" class="col-span-2 md:col-span-1">
             <h1 class="text-center">People in Dresden</h1>
+          </div>
+          <div class="md:hidden">
+            <button class="btn" @click="sidebarOpen = !sidebarOpen">
+              <svg viewBox="0 0 100 80" width="24" height="24">
+                <rect width="100" height="10"></rect>
+                <rect y="30" width="100" height="10"></rect>
+                <rect y="60" width="100" height="10"></rect>
+              </svg>          
+            </button>
           </div>
           <div class="font-marc flex items-center justify-end">
             <button class="btn rounded-l transition-all font-bold" :class="lang === 'en' ? 'btn-dd' : ''" @click="toggleLanguage('en')">
@@ -73,6 +79,15 @@
             </button>
           </div>
         </div>
+        <div class="container mx-auto mobile-menu pt-2" :class="{'hidden': !sidebarOpen}">
+          <ul class="">
+            <li><a class="block p-4 hover:bg-dd">Team</a></li>
+            <li><a class="block p-4 hover:bg-dd transition duration-300">Presse</a></li>
+            <li><a class="block p-4 hover:bg-dd transition duration-300">Mission</a></li>
+            <li><a class="block p-4 hover:bg-dd transition duration-300">Stadt</a></li>
+          </ul>
+        </div>
+
       </div>
     </transition>
     <div class="container mx-auto pt-16" ref="container">      
@@ -132,9 +147,11 @@ export default defineComponent({
       modalOpened: ref(false),
       banner: ref(true),
       subtitle: ref(true),
-      readmore: ref(false),
+      readmore: ref(true),
       fixedHeader: ref(false),
-      bannerStyle
+      bannerStyle,
+      observer: ref<IntersectionObserver | undefined>(),
+      sidebarOpen: ref(false),
     };
   },
   mounted() {
@@ -145,12 +162,15 @@ export default defineComponent({
       if (event.key === '3') this.readmore = !this.readmore;
     });
 
-    const observer = new IntersectionObserver(
+    this.observer = new IntersectionObserver(
       (entry, opts) => {
         this.toggleFixedHeader(!entry[0].isIntersecting)
-      }, {root: null, threshold: .5}
+      }, {rootMargin: '50%', threshold: .1}
     )
-    observer.observe(this.$refs['headerTitle'] as Element);
+    this.observer.observe(this.$refs['headerTitle'] as Element);
+  },
+  destroyed() {
+    this.observer?.unobserve(this.$refs['headerTitle'] as Element);
   },
   methods: {
     toggleLanguage(lang: 'en' | 'de') {
