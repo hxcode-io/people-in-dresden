@@ -7,7 +7,7 @@
            class="w-full h-full" style="object-fit: cover;" alt="big header"> -->
       <div class="overlay bg-black z-10 absolute top-0 opacity-20 h-full w-full -mt-2"></div>
       <div class="header-content absolute top-0 w-full h-full z-20">
-        <div class="header-logo flex justify-center items-center h-full flex-col">
+        <div class="header-logo flex justify-center items-center h-full flex-col -mt-12">
           <div class="text-white font-marc header-title" ref="headerTitle">
             People in Dresden
           </div>
@@ -131,7 +131,8 @@ export default defineComponent({
     const orderedPosts = computed(() => [...posts.value].sort((a, b) => a.published_at.getTime() - b.published_at.getTime()))
     const bannerStyle = {
       'height': '100vh', 
-      backgroundImage: `url('./images/nicole-kurtze--Yvw4_mrjcI-unsplash.jpg')`,
+      backgroundImage: `url('./images/kulturpalast.jpeg')`,
+      // backgroundImage: `url('./images/nicole-kurtze--Yvw4_mrjcI-unsplash.jpg')`,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       backgroundSize: 'cover',
