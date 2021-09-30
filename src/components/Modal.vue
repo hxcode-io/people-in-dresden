@@ -31,7 +31,7 @@
                   {{ post.text.en }}
                 </p>
                 <div class="flex justify-between mt-6 text-gray-400">
-                  <span>{{ post.published_at.toLocaleDateString(localeForDate, optionsForDate) }}</span>
+                  <span>{{ post.published_at.toLocaleDateString(localeForDate, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
 <!--                  <span class="hover:underline cursor-pointer">-->
 <!--                    <span v-if="lang === 'de'" @click.stop="$emit('toggleLangEn')">English version</span>-->
 <!--                    <span v-if="lang === 'en'" @click.stop="$emit('toggleLangDe')">Deutsche version</span>-->

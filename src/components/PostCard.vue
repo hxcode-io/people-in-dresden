@@ -4,7 +4,7 @@
       <img :src="post.imgSrc" :alt="lang === 'de' ? post.text.de.slice(0, 20) : post.text.en.slice(0,20)" class="w-100 rounded-t">
     </div>
     <div class="px-10 py-4 bg-white shadow-sm border-t-8 border-dd">
-      <span class="text-gray-400">{{ post.published_at.toLocaleDateString(localeForDate, optionsForDate) }}</span>
+      <span class="text-gray-400">{{ post.published_at.toLocaleDateString(localeForDate, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
       <transition name="fade" mode="out-in">
         <p class="whitespace-pre-line my-2" v-if="lang === 'de'">
           {{ post.text.de.substring(1,350) + '...' }}
@@ -48,7 +48,7 @@ export default defineComponent({
     const localeForDate = computed<string>(() => props.lang === "de" ? "de-DE" : "en-EN" )
     return {
       localeForDate,
-      optionsForDate: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+      // optionsForDate: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
     }
   },
   methods: {
