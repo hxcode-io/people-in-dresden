@@ -27,14 +27,9 @@ export class InterviewService {
   getInterviews(page:number, size:number = 25): Promise<Array<Interview>> {
     return this.getIds().then((ids:Array<number>) => {
       const pageIds = this.getPage(ids, page, size);
-      return pageIds.map((id:number) => {
-        return {
-          de: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-          en: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-          imageUrl: this.getImageUrl(id),
-          published_at: new Date(id * 1000)
-        }
-      })
+      return Promise.all(pageIds.map((id:number) => {
+        return this.loadInterview(id);
+      }));
     })
   }
 
@@ -52,5 +47,21 @@ export class InterviewService {
       minimumIntegerDigits: 2,
       useGrouping: false
     })
+  }
+
+  loadInterview(id: number): Promise<Interview> {
+    return axios.get(this.getInterviewUrl(id)).then(response => {
+      return {
+        de: response.data.de,
+        en: response.data.en,
+        imageUrl: this.getImageUrl(id),
+        published_at: new Date(id * 1000)
+      }
+    });
+  }
+
+  getInterviewUrl(id: number): string {
+    const date = new Date(id * 1000);
+    return `${this.URL}/${date.getFullYear()}/${this.formatNumber(date.getMonth() + 1)}/${this.formatNumber(date.getDate())}/${id}-interview.json`;
   }
 }
