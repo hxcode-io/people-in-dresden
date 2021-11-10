@@ -118,6 +118,7 @@ import {computed, defineComponent, ref} from 'vue'
 import PostCard from './components/PostCard.vue'
 import {Post, PostService} from "./service/PostService";
 import Modal from './components/Modal.vue';
+import {Interview, InterviewService} from "./service/InterviewService";
 
 export default defineComponent({
   name: 'App',
@@ -169,6 +170,19 @@ export default defineComponent({
       }, {rootMargin: '50%', threshold: .1}
     )
     this.observer.observe(this.$refs['headerTitle'] as Element);
+
+    //TODO remove it later
+    // Test the new InterviewService
+    const interviewService = new InterviewService();
+    interviewService.getIds().then((ids: Array<number>) => {
+      console.log("ids", ids);
+    });
+    interviewService.getInterviews(0).then((interviews: Array<Interview>) => {
+      console.log("interviews 0", interviews);
+    })
+    interviewService.getInterviews(1).then((interviews: Array<Interview>) => {
+      console.log("interviews 1", interviews);
+    })
   },
   destroyed() {
     this.observer?.unobserve(this.$refs['headerTitle'] as Element);
