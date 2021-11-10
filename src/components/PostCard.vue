@@ -7,10 +7,10 @@
       <span class="text-gray-400">{{ post.published_at.toLocaleDateString(localeForDate, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
       <transition name="fade" mode="out-in">
         <p class="whitespace-pre-line my-2" v-if="lang === 'de'">
-          {{ post.de.substring(1,350) + '...' }}
+          {{ post.de.substring(0,350) + '...' }}
         </p>
         <p class="whitespace-pre-line my-2" v-else>
-          {{ post.en.substring(1,350) + '...' }}
+          {{ post.en.substring(0,350) + '...' }}
         </p>
       </transition>
 

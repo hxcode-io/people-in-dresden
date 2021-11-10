@@ -90,31 +90,21 @@
 
       </div>
     </transition>
-    <div class="container mx-auto pt-16 flex-grow flex flex-col h-full" ref="container">     
+    <div class="container mx-auto pt-16 flex-grow flex flex-col h-full relative" ref="container"> 
       <div class="flex mb-4">
         <div class="w-1/3 px-2" v-for="(col, i) in interviewCols" :key="i" :ref="'col'+i">
-          <post-card v-for="post in col.value"
+          <post-card v-for="post in col.interviews"
                     :key="post.de"
                     :post="post"
                     :lang="lang"
                     :readmore="readmore"
                     @openModal="openModal"
-                    class="my-6 masonry-item"/>
-                    
+                    class="my-6 masonry-item"
+                    />
         </div>
       </div>
- 
-      <!-- <div class="masonry lg:masonry-3-col md:masonry-2-col">
-        <post-card v-for="post in orderedPosts"
-                   :key="post.de"
-                   :post="post"
-                   :lang="lang"
-                   :readmore="readmore"
-                   @openModal="openModal"
-                   class="my-6 masonry-item"/>
-      </div> -->
-      <div v-if="idx < 3" class="text-center btn w-full cursor-pointer bg-gray-200">
-        <span @click="loadMore()">Load more ...</span>
+      <div class="text-center btn w-full cursor-pointer bg-gray-200" @click="loadMore()" ref="loadMore">
+        <span>Load more ...</span>
       </div>
     </div>
     <modal :openModal="modalOpened"
@@ -129,7 +119,6 @@
 <script lang="ts">
 import {computed, defineComponent, Ref, ref} from 'vue'
 import PostCard from './components/PostCard.vue'
-import {Post, PostService} from "./service/PostService";
 import Modal from './components/Modal.vue';
 import {Interview, InterviewService} from "./service/InterviewService";
 
@@ -146,10 +135,10 @@ export default defineComponent({
     const interviewsCol1 = ref<Interview[]>([]);
     const interviewsCol2 = ref<Interview[]>([]);
     const interviewsCol3 = ref<Interview[]>([]);
-    const interviewCols = ref<Ref<Interview[]>[]>([
-      interviewsCol1,
-      interviewsCol2,
-      interviewsCol3,
+    const interviewCols = ref<{height: Ref<number>,interviews: Ref<Interview[]>}[]>([
+      {height: ref(0), interviews: interviewsCol1},
+      {height: ref(0), interviews: interviewsCol2},
+      {height: ref(0), interviews: interviewsCol3},
     ]);
     const bannerStyle = {
       'height': '100vh', 
@@ -164,17 +153,18 @@ export default defineComponent({
     return {
       idx,
       lang: ref('en'),
-      activePost: ref<Post | undefined>(),
+      activePost: ref<Interview | undefined>(),
       modalOpened: ref(false),
       banner: ref(true),
       subtitle: ref(true),
       readmore: ref(true),
       fixedHeader: ref(false),
       bannerStyle,
-      observer: ref<IntersectionObserver | undefined>(),
+      headerObserver: ref<IntersectionObserver | undefined>(),
+      loadmoreObserver: ref<IntersectionObserver | undefined>(),
       sidebarOpen: ref(false),
       interviewCols,
-      interviewService
+      interviewService,
     };
   },
   mounted() {
@@ -187,6 +177,7 @@ export default defineComponent({
 
     this.observeHeader();
     this.setInterviews();
+    this.observeLoadMore();
 
     //TODO remove it later
     // Test the new InterviewService
@@ -201,7 +192,8 @@ export default defineComponent({
     })
   },
   destroyed() {
-    this.observer?.unobserve(this.$refs['headerTitle'] as Element);
+    this.headerObserver?.unobserve(this.$refs['headerTitle'] as Element);
+    this.loadmoreObserver?.unobserve(this.$refs['loadMore'] as Element);
   },
   methods: {
     toggleLanguage(lang: 'en' | 'de') {
@@ -212,7 +204,7 @@ export default defineComponent({
       this.modalOpened = false;
       document.body.classList.remove('overflow-hidden')
     },
-    openModal(post: Post) {
+    openModal(post: Interview) {
       this.activePost = post;
       this.modalOpened = true;
       document.body.classList.add('overflow-hidden')
@@ -223,26 +215,60 @@ export default defineComponent({
     },
     loadMore() {
       this.idx = this.idx + 1;
-      // this.interviews.push(...(new PostService().getPosts(this.idx)))
+      this.interviewService.getInterviews(this.idx, 25)
+                          .then(interviews => {
+                            interviews.forEach(interview => {
+                              this.addItemToList(interview);
+                            })
+                          })
     },
     toggleFixedHeader(value: boolean) {
       this.fixedHeader = value;
     },
     observeHeader() {
-      this.observer = new IntersectionObserver(
+      this.headerObserver = new IntersectionObserver(
         (entry, opts) => {
           this.toggleFixedHeader(!entry[0].isIntersecting)
         }, {rootMargin: '50%', threshold: .1}
       )
-      this.observer.observe(this.$refs['headerTitle'] as Element);
+      this.headerObserver.observe(this.$refs['headerTitle'] as Element);
+    },
+    observeLoadMore() {
+      // this.loadmoreObserver = new IntersectionObserver(
+      //   (entry, opts) => {
+      //     console.log('found');
+      //     this.loadMore()
+      //   }, {rootMargin: '10%', threshold: .1}
+      // )
+      // this.loadmoreObserver.observe(this.$refs['loadMore'] as Element);
     },
     setInterviews() {
       this.interviewService.getInterviews(0, 25).then(interviews => {
+        let next = 0;
         interviews.forEach((interview, i) => {
-          this.interviewCols[i%3].value.push(interview);
+          if(i < 3) {
+            const col = this.interviewCols[i%3];
+            col.interviews.push(interview);
+            const image = new Image();
+            image.onload = () => {
+              col.height+=image.height;
+            }
+            image.src = interview.imageUrl;
+          } else {
+            this.addItemToList(interview);
+          }
         })
       });
-      console.log(this.interviewCols)
+    },
+    addItemToList(interview: Interview) {
+      const image = new Image();
+      image.onload = () => {
+        const cols = this.interviewCols;
+        const col = cols.sort((a,b) => a.height - b.height)[0];
+        col.interviews.push(interview);
+        col.height+=image.height;
+      }
+      image.src = interview.imageUrl;
     }
   },
 })
