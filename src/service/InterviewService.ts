@@ -10,43 +10,29 @@ export interface Interview {
 export class InterviewService {
 
   URL = "https://people.hxcode.io";
-  ids:Array<number> | undefined = undefined;
+  ids:Array<number> | undefined = undefined; // Cache ids
 
   getIds(): Promise<Array<number>> {
     if (this.ids !== undefined) {
-      console.log("Return ids from cache")
       return Promise.resolve(this.ids);
     }
-    return axios.get(this.URL + '/ids.json').then((response: any) => {
-      this.ids = response.data;
-      if (this.ids !== undefined) return this.ids;
+    return axios.get(this.URL + '/ids.json').then(response => {
+      if (response.data != undefined) {
+        this.ids = (response.data as Array<number>).reverse(); // Cache
+        return this.ids;
+      }
       throw new Error("No ids found");
     });
   }
 
   getInterviews(page:number, size:number = 25): Promise<Array<Interview>> {
-    return this.getIds().then((ids:Array<number>) => {
-      const pageIds = this.getPage(ids, page, size);
-      return Promise.all(pageIds.map((id:number) => {
-        return this.loadInterview(id);
-      }));
-    })
+    return this.getIds().then((ids:Array<number>) =>
+      Promise.all(this.getPage(ids, page, size).map((id:number) => this.loadInterview(id)))
+    )
   }
 
   getPage(ids:Array<number>, page:number, size:number): Array<number> {
     return ids.slice(page * size, (page + 1) * size);
-  }
-
-  getImageUrl(id: number): string {
-    const date = new Date(id * 1000);
-    return `${this.URL}/${date.getFullYear()}/${this.formatNumber(date.getMonth() + 1)}/${this.formatNumber(date.getDate())}/${id}-image.jpg`;
-  }
-
-  formatNumber(n:number): string {
-    return n.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    })
   }
 
   loadInterview(id: number): Promise<Interview> {
@@ -60,8 +46,24 @@ export class InterviewService {
     });
   }
 
-  getInterviewUrl(id: number): string {
-    const date = new Date(id * 1000);
-    return `${this.URL}/${date.getFullYear()}/${this.formatNumber(date.getMonth() + 1)}/${this.formatNumber(date.getDate())}/${id}-interview.json`;
+  getImageUrl(id: number): string {
+    return `${this.getInterviewBaseUrl(id)}/${id}-image.jpg`;
   }
+
+  getInterviewUrl(id: number): string {
+    return `${this.getInterviewBaseUrl(id)}/${id}-interview.json`;
+  }
+
+  getInterviewBaseUrl(id: number): string {
+    const date = new Date(id * 1000);
+    return `${this.URL}/${date.getFullYear()}/${this.formatNumber(date.getMonth() + 1)}/${this.formatNumber(date.getDate())}`;
+  }
+
+  formatNumber(n:number): string {
+    return n.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    })
+  }
+
 }

@@ -181,15 +181,16 @@ export default defineComponent({
 
     //TODO remove it later
     // Test the new InterviewService
-    this.interviewService.getIds().then((ids: Array<number>) => {
-      console.log("ids", ids);
-    });
-    this.interviewService.getInterviews(0).then((interviews: Array<Interview>) => {
-      console.log("interviews 0", interviews);
-    })
-    this.interviewService.getInterviews(1).then((interviews: Array<Interview>) => {
-      console.log("interviews 1", interviews);
-    })
+    // const interviewService = new InterviewService();
+    // interviewService.getIds().then((ids: Array<number>) => {
+    //   console.log("ids", ids);
+    // });
+    // interviewService.getInterviews(0).then((interviews: Array<Interview>) => {
+    //   console.log("interviews 0", interviews);
+    //   interviewService.getInterviews(1).then((interviews2: Array<Interview>) => {
+    //     console.log("interviews 1", interviews2);
+    //   })
+    // })
   },
   destroyed() {
     this.headerObserver?.unobserve(this.$refs['headerTitle'] as Element);
