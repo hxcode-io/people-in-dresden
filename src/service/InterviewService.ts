@@ -31,7 +31,7 @@ export class InterviewService {
         return {
           de: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
           en: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-          imageUrl: "https://people.hxcode.io/2019/01/02/1546448085-image.jpg",
+          imageUrl: this.getImageUrl(id),
           published_at: new Date(id * 1000)
         }
       })
@@ -40,5 +40,17 @@ export class InterviewService {
 
   getPage(ids:Array<number>, page:number, size:number): Array<number> {
     return ids.slice(page * size, (page + 1) * size);
+  }
+
+  getImageUrl(id: number): string {
+    const date = new Date(id * 1000);
+    return `${this.URL}/${date.getFullYear()}/${this.formatNumber(date.getMonth() + 1)}/${this.formatNumber(date.getDate())}/${id}-image.jpg`;
+  }
+
+  formatNumber(n:number): string {
+    return n.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    })
   }
 }
