@@ -182,6 +182,9 @@ export default defineComponent({
     //TODO remove it later
     // Test the new InterviewService
     // const interviewService = new InterviewService();
+    // interviewService.getMaxPage().then((maxPage: number) => {
+    //   console.log("maxPage", maxPage);
+    // });
     // interviewService.getIds().then((ids: Array<number>) => {
     //   console.log("ids", ids);
     // });

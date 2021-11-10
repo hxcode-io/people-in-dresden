@@ -18,7 +18,7 @@ export class InterviewService {
     }
     return axios.get(this.URL + '/ids.json').then(response => {
       if (response.data != undefined) {
-        this.ids = (response.data as Array<number>).reverse(); // Cache
+        this.ids = (response.data as Array<number>).sort((id1: number, id2: number) => id2 - id1); // Cache
         return this.ids;
       }
       throw new Error("No ids found");
@@ -28,6 +28,12 @@ export class InterviewService {
   getInterviews(page:number, size:number = 25): Promise<Array<Interview>> {
     return this.getIds().then((ids:Array<number>) =>
       Promise.all(this.getPage(ids, page, size).map((id:number) => this.loadInterview(id)))
+    )
+  }
+
+  getMaxPage(size:number = 25): Promise<number> {
+    return this.getIds().then((ids:Array<number>) =>
+      Math.ceil(ids.length / size)
     )
   }
 
