@@ -39,22 +39,22 @@
     <transition name="fade" mode="out-in">
       <div class="fixed-nav fixed z-50 top-0 w-full bg-gray-100 py-1 md" v-if="fixedHeader">
         <div class="grid md:grid-cols-3 grid-cols-2  container mx-auto">
-          <div class="font-marc items-center hidden md:flex">
+          <div class="font-marc font-bold items-center hidden md:flex">
             <!-- TODO: 
                   animationstool (?)
                   mobile ansicht, slider
                   masonry
             -->
-            <button class="btn">
+            <button class="btn font-bold">
               TEAM
             </button>
-            <button class="btn ml-1">
+            <button class="btn ml-1 font-bold">
               PRESSE
             </button>
-            <button class="btn ml-1">
+            <button class="btn ml-1 font-bold">
               MISSION
             </button>
-            <button class="btn ml-1">
+            <button class="btn ml-1 font-bold">
               STADT
             </button>
           </div>
@@ -70,13 +70,25 @@
               </svg>          
             </button>
           </div>
-          <div class="font-marc flex items-center justify-end">
-            <button class="btn rounded-l transition-all font-bold" :class="lang === 'en' ? 'btn-dd' : ''" @click="toggleLanguage('en')">
-              EN
-            </button>
-            <button class="btn rounded-r transition-all font-bold" :class="lang === 'de' ? 'btn-dd' : ''" @click="toggleLanguage('de')">
-              DE
-            </button>
+          <div class=" flex items-center justify-end">
+            <div class="pagination mr-5 flex align-items-center">
+              <button class="btn rounded-l transition-all font-bold font-marc" @click="loadPage(--currentPage)" :disabled="currentPage===0">
+                <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="w-3"><path fill="#333" d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z" class=""></path></svg>
+              </button>
+              <span class="p-2">{{currentPage}}</span>
+              <!-- <input disabled type="number" v-model="currentPage" min="0" class="w-12 px-2"> -->
+              <button class="btn rounded-r transition-all font-bold font-marc" @click="loadPage(++currentPage)">
+                <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="w-3"><path fill="#333" d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z" class=""></path></svg>
+              </button>
+            </div>
+            <div class="language font-marc">
+              <button class="btn rounded-l transition-all font-bold" :class="lang === 'en' ? 'btn-dd' : ''" @click="toggleLanguage('en')">
+                EN
+              </button>
+              <button class="btn rounded-r transition-all font-bold" :class="lang === 'de' ? 'btn-dd' : ''" @click="toggleLanguage('de')">
+                DE
+              </button>
+            </div>
           </div>
         </div>
         <div class="container mx-auto mobile-menu pt-2" :class="{'hidden': !sidebarOpen}">
@@ -93,7 +105,7 @@
     <div class="container mx-auto pt-16 flex-grow flex flex-col h-full relative" ref="container"> 
       <div class="flex mb-4">
         <div class="w-1/3 px-2" v-for="(col, i) in interviewCols" :key="i" :ref="'col'+i">
-          <post-card v-for="post in col.interviews"
+          <post-card v-for="post in col.value"
                     :key="post.de"
                     :post="post"
                     :lang="lang"
@@ -102,9 +114,6 @@
                     class="my-6 masonry-item"
                     />
         </div>
-      </div>
-      <div class="text-center btn w-full cursor-pointer bg-gray-200" @click="loadMore()" ref="loadMore">
-        <span>Load more ...</span>
       </div>
     </div>
     <modal :openModal="modalOpened"
@@ -129,16 +138,15 @@ export default defineComponent({
     Modal
   },
   setup: () => {
-    // TODO Masonry 3 arrays, 3 Spalten, position of last element in list + item
     const interviewService = new InterviewService();
     const idx = ref(1);
     const interviewsCol1 = ref<Interview[]>([]);
     const interviewsCol2 = ref<Interview[]>([]);
     const interviewsCol3 = ref<Interview[]>([]);
-    const interviewCols = ref<{height: Ref<number>,interviews: Ref<Interview[]>}[]>([
-      {height: ref(0), interviews: interviewsCol1},
-      {height: ref(0), interviews: interviewsCol2},
-      {height: ref(0), interviews: interviewsCol3},
+    const interviewCols = ref<Ref<Interview[]>[]>([
+      interviewsCol1,
+      interviewsCol2,
+      interviewsCol3,
     ]);
     const bannerStyle = {
       'height': '100vh', 
@@ -149,7 +157,7 @@ export default defineComponent({
       backgroundSize: 'cover',
       backgroundAttachment: 'fixed',
       display: 'block'
-    }
+    };
     return {
       idx,
       lang: ref('en'),
@@ -165,6 +173,7 @@ export default defineComponent({
       sidebarOpen: ref(false),
       interviewCols,
       interviewService,
+      currentPage: ref(1)
     };
   },
   mounted() {
@@ -176,21 +185,7 @@ export default defineComponent({
     });
 
     this.observeHeader();
-    this.setInterviews();
-    this.observeLoadMore();
-
-    //TODO remove it later
-    // Test the new InterviewService
-    // const interviewService = new InterviewService();
-    // interviewService.getIds().then((ids: Array<number>) => {
-    //   console.log("ids", ids);
-    // });
-    // interviewService.getInterviews(0).then((interviews: Array<Interview>) => {
-    //   console.log("interviews 0", interviews);
-    //   interviewService.getInterviews(1).then((interviews2: Array<Interview>) => {
-    //     console.log("interviews 1", interviews2);
-    //   })
-    // })
+    this.initInterviews();
   },
   destroyed() {
     this.headerObserver?.unobserve(this.$refs['headerTitle'] as Element);
@@ -214,13 +209,13 @@ export default defineComponent({
       const element: HTMLElement | undefined = this.$refs["container"] as HTMLElement;
       element.scrollIntoView({behavior: "smooth"});
     },
-    loadMore() {
-      this.idx = this.idx + 1;
-      this.interviewService.getInterviews(this.idx, 25)
+    loadPage(page?: number) {
+      if(page) this.currentPage = page < 1 ? 1 : page;
+      this.interviewService.getInterviews(this.currentPage, 25)
                           .then(interviews => {
-                            interviews.forEach(interview => {
-                              this.addItemToList(interview);
-                            })
+                            this.interviewCols = [ref<Interview[]>([]), ref<Interview[]>([]), ref<Interview[]>([])];
+                            this.addInterviews(interviews);
+                            this.scroll();
                           })
     },
     toggleFixedHeader(value: boolean) {
@@ -234,44 +229,18 @@ export default defineComponent({
       )
       this.headerObserver.observe(this.$refs['headerTitle'] as Element);
     },
-    observeLoadMore() {
-      // this.loadmoreObserver = new IntersectionObserver(
-      //   (entry, opts) => {
-      //     console.log('found');
-      //     this.loadMore()
-      //   }, {rootMargin: '10%', threshold: .1}
-      // )
-      // this.loadmoreObserver.observe(this.$refs['loadMore'] as Element);
-    },
-    setInterviews() {
+    initInterviews() {
       this.interviewService.getInterviews(0, 25).then(interviews => {
-        let next = 0;
-        interviews.forEach((interview, i) => {
-          if(i < 3) {
-            const col = this.interviewCols[i%3];
-            col.interviews.push(interview);
-            const image = new Image();
-            image.onload = () => {
-              col.height+=image.height;
-            }
-            image.src = interview.imageUrl;
-          } else {
-            this.addItemToList(interview);
-          }
-        })
+        this.addInterviews(interviews);
       });
     },
-    addItemToList(interview: Interview) {
-      const image = new Image();
-      image.onload = () => {
-        const cols = this.interviewCols;
-        const col = cols.sort((a,b) => a.height - b.height)[0];
-        col.interviews.push(interview);
-        col.height+=image.height;
-      }
-      image.src = interview.imageUrl;
+    addInterviews(interviews: Interview[]) {
+      interviews.forEach((interview, i) => {
+        const col = this.interviewCols[i%3];
+        col.value.push(interview);
+      })
     }
-  },
+  }
 })
 </script>
 
