@@ -17,7 +17,7 @@ export class InterviewService {
       console.log("Return ids from cache")
       return Promise.resolve(this.ids);
     }
-    return axios.get(this.URL + '/ids.json').then(response => {
+    return axios.get(this.URL + '/ids.json').then((response: any) => {
       this.ids = response.data;
       if (this.ids !== undefined) return this.ids;
       throw new Error("No ids found");

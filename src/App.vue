@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto h-full w-full pb-8 border-b-8 hover:translate-x-2" :class="{ 'pt-8 border-t-8': !banner }">
+  <div class="mx-auto h-full w-full pb-8 border-b-8 hover:translate-x-2 flex-1" :class="{ 'pt-8 border-t-8': !banner }">
     <div v-if="banner" class="mb-16 border-b-8 border-dd" :style="bannerStyle">
       <!-- <img src="/images/denis-jung-ybG6toJN3iE-unsplash.jpg"
            class="w-full h-full" style="object-fit: cover;" alt="big header"> -->
@@ -90,16 +90,29 @@
 
       </div>
     </transition>
-    <div class="container mx-auto pt-16" ref="container">      
-      <div class="masonry lg:masonry-3-col md:masonry-2-col">
+    <div class="container mx-auto pt-16 flex-grow flex flex-col h-full" ref="container">     
+      <div class="flex mb-4">
+        <div class="w-1/3 px-2" v-for="(col, i) in interviewCols" :key="i" :ref="'col'+i">
+          <post-card v-for="post in col.value"
+                    :key="post.de"
+                    :post="post"
+                    :lang="lang"
+                    :readmore="readmore"
+                    @openModal="openModal"
+                    class="my-6 masonry-item"/>
+                    
+        </div>
+      </div>
+ 
+      <!-- <div class="masonry lg:masonry-3-col md:masonry-2-col">
         <post-card v-for="post in orderedPosts"
-                   :key="post.text.de"
+                   :key="post.de"
                    :post="post"
                    :lang="lang"
                    :readmore="readmore"
                    @openModal="openModal"
                    class="my-6 masonry-item"/>
-      </div>
+      </div> -->
       <div v-if="idx < 3" class="text-center btn w-full cursor-pointer bg-gray-200">
         <span @click="loadMore()">Load more ...</span>
       </div>
@@ -114,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, ref} from 'vue'
+import {computed, defineComponent, Ref, ref} from 'vue'
 import PostCard from './components/PostCard.vue'
 import {Post, PostService} from "./service/PostService";
 import Modal from './components/Modal.vue';
@@ -127,9 +140,17 @@ export default defineComponent({
     Modal
   },
   setup: () => {
+    // TODO Masonry 3 arrays, 3 Spalten, position of last element in list + item
+    const interviewService = new InterviewService();
     const idx = ref(1);
-    const posts = ref(new PostService().getPosts(idx.value));
-    const orderedPosts = computed(() => [...posts.value].sort((a, b) => a.published_at.getTime() - b.published_at.getTime()))
+    const interviewsCol1 = ref<Interview[]>([]);
+    const interviewsCol2 = ref<Interview[]>([]);
+    const interviewsCol3 = ref<Interview[]>([]);
+    const interviewCols = ref<Ref<Interview[]>[]>([
+      interviewsCol1,
+      interviewsCol2,
+      interviewsCol3,
+    ]);
     const bannerStyle = {
       'height': '100vh', 
       backgroundImage: `url('./images/kulturpalast.jpeg')`,
@@ -142,8 +163,6 @@ export default defineComponent({
     }
     return {
       idx,
-      posts,
-      orderedPosts,
       lang: ref('en'),
       activePost: ref<Post | undefined>(),
       modalOpened: ref(false),
@@ -154,6 +173,8 @@ export default defineComponent({
       bannerStyle,
       observer: ref<IntersectionObserver | undefined>(),
       sidebarOpen: ref(false),
+      interviewCols,
+      interviewService
     };
   },
   mounted() {
@@ -164,23 +185,18 @@ export default defineComponent({
       if (event.key === '3') this.readmore = !this.readmore;
     });
 
-    this.observer = new IntersectionObserver(
-      (entry, opts) => {
-        this.toggleFixedHeader(!entry[0].isIntersecting)
-      }, {rootMargin: '50%', threshold: .1}
-    )
-    this.observer.observe(this.$refs['headerTitle'] as Element);
+    this.observeHeader();
+    this.setInterviews();
 
     //TODO remove it later
     // Test the new InterviewService
-    const interviewService = new InterviewService();
-    interviewService.getIds().then((ids: Array<number>) => {
+    this.interviewService.getIds().then((ids: Array<number>) => {
       console.log("ids", ids);
     });
-    interviewService.getInterviews(0).then((interviews: Array<Interview>) => {
+    this.interviewService.getInterviews(0).then((interviews: Array<Interview>) => {
       console.log("interviews 0", interviews);
     })
-    interviewService.getInterviews(1).then((interviews: Array<Interview>) => {
+    this.interviewService.getInterviews(1).then((interviews: Array<Interview>) => {
       console.log("interviews 1", interviews);
     })
   },
@@ -207,10 +223,26 @@ export default defineComponent({
     },
     loadMore() {
       this.idx = this.idx + 1;
-      this.posts.push(...(new PostService().getPosts(this.idx)))
+      // this.interviews.push(...(new PostService().getPosts(this.idx)))
     },
     toggleFixedHeader(value: boolean) {
       this.fixedHeader = value;
+    },
+    observeHeader() {
+      this.observer = new IntersectionObserver(
+        (entry, opts) => {
+          this.toggleFixedHeader(!entry[0].isIntersecting)
+        }, {rootMargin: '50%', threshold: .1}
+      )
+      this.observer.observe(this.$refs['headerTitle'] as Element);
+    },
+    setInterviews() {
+      this.interviewService.getInterviews(0, 25).then(interviews => {
+        interviews.forEach((interview, i) => {
+          this.interviewCols[i%3].value.push(interview);
+        })
+      });
+      console.log(this.interviewCols)
     }
   },
 })

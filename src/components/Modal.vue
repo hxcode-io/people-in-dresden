@@ -19,16 +19,16 @@
       <div class="modal-content container mx-auto pt-2 overflow-y-auto">
         <div class="grid grid-cols-1 lg:grid-cols-10 gap-24 mb-6" v-if="post">
           <div class="lg:col-span-6">
-            <img :src="post.imgSrc" :alt="post.text.de.slice(0, 20)" class="w-100 rounded">
+            <img :src="post.imageUrl" :alt="post.de.slice(0, 20)" class="w-100 rounded">
           </div>
           <div class="lg:col-span-4 mr-4 text-gray-700" style="line-height: 27px;">
             <transition name="fade" mode="out-in">
               <div>
                 <p class="whitespace-pre-line" v-if="lang === 'de'">
-                  {{ post.text.de }}
+                  {{ post.de }}
                 </p>
                 <p class="whitespace-pre-line" v-else>
-                  {{ post.text.en }}
+                  {{ post.en }}
                 </p>
                 <div class="flex justify-between mt-6 text-gray-400">
                   <span>{{ post.published_at.toLocaleDateString(localeForDate, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
@@ -48,6 +48,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, PropType} from 'vue'
+import { Interview } from '../service/InterviewService';
 import { Post } from '../service/PostService';
 
 export default defineComponent({
@@ -61,7 +62,7 @@ export default defineComponent({
   },
   options: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
   props: {
-    post: Object as PropType<Post>,
+    post: Object as PropType<Interview>,
     lang: {
       type: String, // see https://stackoverflow.com/questions/64325502/vue-js-3-props-type-validation-with-custom-type
       required: true
