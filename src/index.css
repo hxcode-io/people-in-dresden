@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
     @font-face {
         font-family: 'MarcellusSC';
@@ -17,6 +16,13 @@
     }
     #app {
         @apply min-h-full;
+        font-family: 'Roboto Slab', sans-serif;
+    }
+    p, div {
+        font-family: 'Roboto Slab', sans-serif;
+    }
+    p {
+        @apply my-16;
     }
     h1 {
         @apply text-4xl my-2;
@@ -27,15 +33,4 @@
         @apply font-marc;
     }
    
-}
-
-@layer utilities {
-    @variants responsive {
-        .masonry-3-col {
-            column-count: 3;
-        }
-        .masonry-2-col {
-            column-count: 2;
-        }
-    }
 }
