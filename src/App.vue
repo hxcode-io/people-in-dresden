@@ -37,7 +37,7 @@
       </div>
     </div>
     <transition name="fade" mode="out-in">
-      <div class="fixed-nav fixed z-50 top-0 w-full bg-white pt-1" v-if="fixedHeader">
+      <div class="fixed-nav fixed z-50 top-0 w-full bg-white py-1" v-if="fixedHeader">
         <div class="flex justify-between container mx-auto px-12">
           <div class="font-marc font-bold items-center flex">
             <button class="btn font-bold uppercase" @click="goToAbout">
