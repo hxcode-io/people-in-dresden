@@ -15,14 +15,14 @@
             </div>
           </div>
         </div>
-        <div class="header-navigation flex justify-center items-center absolute w-full py-2">
+        <div class="header-navigation flex justify-center items-center absolute bottom-5 w-full">
 <!--          <div class="navigation-group font-marc md:block hidden">-->
 <!--            <a href="">Team</a>-->
 <!--          </div>-->
 <!--          <div class="navigation-group font-marc md:block hidden">-->
 <!--            <a href="">Presse</a>-->
 <!--          </div>-->
-          <div class="bg-white hover:bg-dd cursor-pointer h-12 w-12  flex items-center justify-center rounded-full mb-4 md:mb-0" @click="scroll">
+          <div class="bg-white hover:bg-dd cursor-pointer h-12 w-12  flex items-center justify-center rounded-full " @click="scroll">
             <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9.83265 12.5968L0.343249 3.1073C-0.114417 2.64963 -0.114417 1.90764 0.343249 1.45003L1.45004 0.343238C1.90692 -0.113646 2.6474 -0.114526 3.10536 0.341285L10.6613 7.86184L18.2172 0.341285C18.6752 -0.114526 19.4157 -0.113646 19.8725 0.343238L20.9793 1.45003C21.437 1.90769 21.437 2.64968 20.9793 3.1073L11.49 12.5968C11.0323 13.0544 10.2903 13.0544 9.83265 12.5968Z" fill="#333333"/>
             </svg>
@@ -44,10 +44,17 @@
               About
             </button>
           </div>
-          <div ref="title" class="hidden lg:block">
-            <h1 class="text-center">People in Dresden</h1>
+          <div ref="title" class="hidden lg:block ml-16">
+            <h1 class="text-center ">People in Dresden</h1>
           </div>
           <div class="flex items-center justify-end">
+            <!-- <div class="font-marc mr-3">
+              <button @click="filterOpen=!filterOpen"
+                      class="btn rounded uppercase font-bold" 
+                      :class="filterOpen?'btn-dd':''">
+                Filter
+              </button>
+            </div> -->
             <div class="language font-marc">
               <button class="btn rounded-l transition-all font-bold" :class="lang === 'en' ? 'btn-dd' : ''" @click="switchEnglish">
                 EN
@@ -58,6 +65,43 @@
             </div>
           </div>
         </div>
+        <!-- <transition name="fade" mode="in-out"> -->
+          <div class="bg-gray-100 filter-container mt-2 md:mt-0" v-if="filterOpen">
+            <div class="border-t-8 border-dd mx-auto container px-12 py-6 h-full bg-white">
+              <div class="year-filter mb-6">
+                <h2 class="font-bold uppercase">Jahr</h2>
+                <div class="year-buttons">
+                  <button class="btn rounded-l">Alle</button>
+                  <button class="btn">2022</button>
+                  <button class="btn">2021</button>
+                  <button class="btn">2020</button>
+                  <button class="btn">2019</button>
+                  <button class="btn">2018</button>
+                  <button class="btn">2017</button>
+                  <button class="btn rounded-r">2016</button>
+                </div>
+              </div>
+              <div class="month-filter">
+                <h2 class="font-bold uppercase">Monat</h2>
+                <div class="month-buttons">
+                  <button class="btn rounded-l">Alle</button>
+                  <button class="btn">Januar</button>
+                  <button class="btn">Februar</button>
+                  <button class="btn">März</button>
+                  <button class="btn">April</button>
+                  <button class="btn">Mai</button>
+                  <button class="btn">Juni</button>
+                  <button class="btn">Juli</button>
+                  <button class="btn">August</button>
+                  <button class="btn">September</button>
+                  <button class="btn">Oktober</button>
+                  <button class="btn">November</button>
+                  <button class="btn rounded-r">Dezember</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- </transition> -->
       </div>
     </transition>
     <div class="container mx-auto px-12" ref="container">
@@ -106,7 +150,8 @@ export default {
         },
       },
       items: [],
-      running: false
+      running: false,
+      filterOpen: false,
     }
   },
   computed: {
@@ -184,12 +229,12 @@ export default {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .25s
+  transition: opacity .25s ease-out;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0
+  opacity: 0;
 }
 
 .navigation-group {
@@ -224,5 +269,9 @@ export default {
   .header-subtitle {
     font-size: 18px;
   }
+}
+
+.filter-container {
+  height: 75vh;
 }
 </style>
