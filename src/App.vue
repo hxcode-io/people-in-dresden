@@ -167,6 +167,7 @@ export default {
         this.$router.push('/');
       }
     });
+    this.$plausible.trackPageview();
   },
   methods: {
     append() {
@@ -184,11 +185,13 @@ export default {
       console.log("Open modal ", interview)
       document.body.classList.add('overflow-hidden')
       this.$router.push('/interview/' + interview.id);
+      this.$plausible.trackPageview();
     },
     goToAbout() {
       console.log("Go to about")
       document.body.classList.add('overflow-hidden')
       this.$router.push('/about');
+      this.$plausible.trackPageview();
     },
     switchGerman() {
       this.$store.commit('switchGerman')
