@@ -25,6 +25,9 @@
             <p>
               Manchmal wurden wir eingeladen, Organisationen oder Veranstaltungen zu besuchen, aber im Großen und Ganzen suchten wir uns die Menschen, mit denen wir sprachen, nicht aus. In der Regel gingen wir mit einem Aufnahmegerät und einer Kamera auf die Straße und baten die Menschen um ein Interview. "Hallo, wir sind von People in Dresden. Wir interviewen Menschen in Dresden und stellen jeden Tag ein Interview mit einem Bild ins Internet." Die meisten der Menschen, die sich bereit erklärten, mit uns zu sprechen, kamen aus anderen Orten - in Deutschland und aus dem Ausland - und wollten über ihre Erfahrungen mit und in der Stadt berichten. Einerseits war dies symptomatisch für Dresden als eine Stadt im Wandel, die Neuankömmlinge aus der ganzen Welt willkommen heißt. Andererseits deutet es auf eine Grundstimmung des Misstrauens unter den Dresdnern hin. Aus welchen Gründen auch immer - dem Rechtsdrall der Bürger, die die Medien als "Lügenpresse" betrachten, dem postkommunistischen Zynismus gegenüber sozialen Aktivitäten im öffentlichen Raum oder einfach einer tief sitzenden Miesepetrigkeit - war Dresden nicht der einfachste Ort, um ein Projekt wie das unsere zu verwirklichen.  Umso erfreulicher ist die Tatsache, dass wir in der Lage waren, bis zur Pandemie jeden Tag ein Interview zu veröffentlichen und die Verbindungen und Beziehungen in der Stadt zu knüpfen, die wir aufgebaut haben. Wir hoffen, dass unsere Arbeit in diesen Jahren als Oral History eines Moments in der Geschichte Dresdens und Deutschlands dienen kann und den Lesern einige der wunderbaren Menschen vorstellt, die wir getroffen haben.
             </p>
+            <p>
+              Website ist realisiert und gesponsert von <a href="https://hxcode.io" target="_blank">HxCode</a>
+            </p>
           </div>
           <div class="whitespace-pre-line" v-else>
             <p>
@@ -38,6 +41,9 @@
             </p>
             <p>
               Sometimes, we were invited to visit organizations or events, but by and large we didn’t choose the people to whom we talked. Usually, we went out on the street, with a recording device and a camera and asked people for an interivew. “Hi, we are from People in Dresden. We interview people in Dresden and post an interview with a picture on the internet each day.” Most of the people who agreed to talk to us were from other places in Germany and beyond, who wanted to reflect on their experience of and in the city. On the one hand, this was symptomatic of Dresden as a city in flux, welcoming new arrivals from the around the globe. On the other, it is suggestive of a basic atmosphere of mistrust among the natives of Dresden. For whatever reason – the rightward bent of the citizens who see the media as “Lügenpresse” or post-Communist cynicism about social activities in the public space or just a deep-seated grouchiness – Dresden was not the easiest place to carry out a project like ours.  So, the fact that we were able to post an interview every day until the pandemic and were able to make the connections and forge the relationships in the city we did is all the more edifying. We hope that our work during these years can serve as an oral history of a moment in Dresden’s, and Germany’s, history, in addition to introducing readers to some of the wonderful people we met.
+            </p>
+            <p>
+              Website is realized and sponsored by <a href="https://hxcode.io" target="_blank">HxCode</a>
             </p>
           </div>
           <div class="pb-20 flex justify-between items-center text-gray-400">

@@ -24,6 +24,9 @@
     p {
         @apply my-16;
     }
+    a {
+        @apply text-dd hover:underline
+    }
     h1 {
         @apply text-4xl my-2;
         @apply font-marc;

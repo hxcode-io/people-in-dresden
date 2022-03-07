@@ -150,7 +150,7 @@ export default {
         },
       },
       items: [],
-      running: false,
+      running: true, // initial value is 'true', this prevents a call from masonry component before mounted is called
       filterOpen: false,
     }
   },
@@ -160,6 +160,8 @@ export default {
     }
   },
   mounted() {
+    console.log("Mounted app")
+    this.running = false;
     this.append();
     this.observeHeader();
     document.addEventListener('keyup', (e) => {
@@ -171,6 +173,7 @@ export default {
   },
   methods: {
     append() {
+      console.log("Append")
       if (this.running) return;
       this.running = true;
       var start = this.items.length;

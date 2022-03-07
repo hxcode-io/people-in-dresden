@@ -19,6 +19,7 @@ export class InterviewService {
   }
 
   getInterviews(page, size = 25) {
+    console.log("Get interviews, page ", page);
     return this.getIds().then((ids) =>
       Promise.all(this.getPage(ids, page, size).map((id) => this.loadInterview(id)))
     )
