@@ -48,13 +48,14 @@
             <h1 class="text-center ">People in Dresden</h1>
           </div>
           <div class="flex items-center justify-end">
-            <!-- <div class="font-marc mr-3">
+            <div class="font-marc mr-3">
               <button @click="filterOpen=!filterOpen"
-                      class="btn rounded uppercase font-bold" 
+                      class="btn rounded uppercase font-bold h-" 
                       :class="filterOpen?'btn-dd':''">
-                Filter
+                <!-- <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc.<path d="M96 32C96 14.33 110.3 0 128 0C145.7 0 160 14.33 160 32V64H288V32C288 14.33 302.3 0 320 0C337.7 0 352 14.33 352 32V64H400C426.5 64 448 85.49 448 112V160H0V112C0 85.49 21.49 64 48 64H96V32zM448 464C448 490.5 426.5 512 400 512H48C21.49 512 0 490.5 0 464V192H448V464z"/></svg> -->
+                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M152 64H296V24C296 10.75 306.7 0 320 0C333.3 0 344 10.75 344 24V64H384C419.3 64 448 92.65 448 128V448C448 483.3 419.3 512 384 512H64C28.65 512 0 483.3 0 448V128C0 92.65 28.65 64 64 64H104V24C104 10.75 114.7 0 128 0C141.3 0 152 10.75 152 24V64zM48 448C48 456.8 55.16 464 64 464H384C392.8 464 400 456.8 400 448V192H48V448z"/></svg>
               </button>
-            </div> -->
+            </div>
             <div class="language font-marc">
               <button class="btn rounded-l transition-all font-bold" :class="lang === 'en' ? 'btn-dd' : ''" @click="switchEnglish">
                 EN
@@ -68,35 +69,55 @@
         <!-- <transition name="fade" mode="in-out"> -->
           <div class="bg-gray-100 filter-container mt-2 md:mt-0" v-if="filterOpen">
             <div class="border-t-8 border-dd mx-auto container px-12 py-6 h-full bg-white">
+              <div class="mb-6">
+                <I18n :en="'1534 Entries'" :de="'1534 Einträge'"/>
+              </div>
               <div class="year-filter mb-6">
-                <h2 class="font-bold uppercase">Jahr</h2>
+                <div class="flex items-center">
+                  <h2 class="font-bold uppercase mr-3">
+                    <I18n :en="'Year'" :de="'Jahr'"/>
+                  </h2>
+                  <a class="text-dd text-sm cursor-pointer" 
+                      v-if="yearsFilter.length > 0"
+                      @click="yearsFilter = []">
+                    <I18n :en="'Remove filter'" :de="'Jahresfilter löschen'"/>    
+                  </a>
+                </div>
                 <div class="year-buttons">
-                  <button class="btn rounded-l">Alle</button>
-                  <button class="btn">2022</button>
-                  <button class="btn">2021</button>
-                  <button class="btn">2020</button>
-                  <button class="btn">2019</button>
-                  <button class="btn">2018</button>
-                  <button class="btn">2017</button>
-                  <button class="btn rounded-r">2016</button>
+                  <button class="btn" 
+                          v-for="(year, index) in years" :key="index"
+                          :class="{
+                            'rounded-l': index===0, 
+                            'rounded-r': index===years.length-1,
+                            'btn-dd': yearsFilter.includes(year) 
+                          }"
+                          @click="toggleYear(year)">
+                    {{year}}
+                  </button>
                 </div>
               </div>
               <div class="month-filter">
-                <h2 class="font-bold uppercase">Monat</h2>
+                <div class="flex items-center">
+                  <h2 class="font-bold uppercase mr-3">
+                    <I18n :en="'Month'" :de="'Monat'"/>    
+                  </h2>
+                  <a class="text-dd text-sm cursor-pointer"
+                     v-if="monthsFilter.length > 0"
+                     @click="monthsFilter = []">
+                    <I18n :en="'Remove filter'" :de="'Monatsfilter löschen'"/>    
+                  </a>
+                </div>                
                 <div class="month-buttons">
-                  <button class="btn rounded-l">Alle</button>
-                  <button class="btn">Januar</button>
-                  <button class="btn">Februar</button>
-                  <button class="btn">März</button>
-                  <button class="btn">April</button>
-                  <button class="btn">Mai</button>
-                  <button class="btn">Juni</button>
-                  <button class="btn">Juli</button>
-                  <button class="btn">August</button>
-                  <button class="btn">September</button>
-                  <button class="btn">Oktober</button>
-                  <button class="btn">November</button>
-                  <button class="btn rounded-r">Dezember</button>
+                  <button class="btn" 
+                          v-for="(month, index) in months" :key="index"
+                          :class="{
+                            'rounded-l': index===0, 
+                            'rounded-r': index===months.length-1,
+                            'btn-dd': monthsFilter.includes(month) 
+                          }"
+                          @click="toggleMonth(month)">
+                    {{lang==='en'?monthsEN[month]:monthsDE[month]}}
+                  </button>
                 </div>
               </div>
             </div>
@@ -119,13 +140,14 @@
 import VueMasonryWall from "vue-masonry-wall";
 import {InterviewService} from "@/service/InterviewService";
 import InterviewCard from "@/components/InterviewCard";
+import I18n from "@/components/I18n";
 
 const interviewService = new InterviewService();
 
 export default {
   name: 'Home',
   components: {
-    VueMasonryWall, InterviewCard
+    VueMasonryWall, InterviewCard, I18n
   },
   data() {
     return {
@@ -152,6 +174,12 @@ export default {
       items: [],
       running: true, // initial value is 'true', this prevents a call from masonry component before mounted is called
       filterOpen: false,
+      yearsFilter: [],
+      monthsFilter: [],
+      years: [2022, 2021, 2020, 2019, 2018, 2017, 2016],
+      months: [0,1,2,3,4,5,6,7,8,9,10,11],
+      monthsEN: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      monthsDE: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
     }
   },
   computed: {
@@ -217,6 +245,22 @@ export default {
       )
       this.headerObserver.observe(this.$refs['headerTitle']);
     },
+    toggleYear(year) {
+      if(this.yearsFilter.includes(year)) {
+        const yearIndex = this.yearsFilter.findIndex(y => y === year);
+        this.yearsFilter.splice(yearIndex, 1)
+      } else {
+        this.yearsFilter.push(year);
+      }
+    },
+    toggleMonth(month) {
+      if(this.monthsFilter.includes(month)) {
+        const monthIndex = this.monthsFilter.findIndex(m => m === month);
+        this.monthsFilter.splice(monthIndex, 1)
+      } else {
+        this.monthsFilter.push(month)
+      }
+    }
   }
 }
 </script>
@@ -224,7 +268,7 @@ export default {
 <style lang="scss">
 
 .btn {
-  @apply py-2 px-4 bg-gray-100;
+  @apply py-2 px-4 bg-gray-100 h-10;
 }
 .btn:hover:not(.btn-dd) {
   @apply bg-gray-300;
@@ -258,6 +302,10 @@ export default {
   font-size: 36px;
 }
 
+.filter-container {
+  height: 75vh;
+}
+
 @media (max-width: 1024px) {
   .header-title {
     font-size: 60px;
@@ -275,9 +323,14 @@ export default {
   .header-subtitle {
     font-size: 18px;
   }
+  .filter-container {
+    height: 100vh;
+  }
 }
 
-.filter-container {
-  height: 75vh;
+.year-buttons, .month-buttons {
+  .btn {
+    margin-bottom: 2px;
+  }
 }
 </style>
