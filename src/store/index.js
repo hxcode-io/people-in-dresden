@@ -6,15 +6,17 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state () {
     return {
-      lang: "de"
+      lang: localStorage.lang ? localStorage.lang : 'de'
     }
   },
   mutations: {
     switchGerman (state) {
-      state.lang = "de"
+      state.lang = "de";
+      localStorage.lang = 'de';
     },
     switchEnglish (state) {
-      state.lang = "en"
+      state.lang = "en";
+      localStorage.lang = 'en';
     }
   },
   actions: {

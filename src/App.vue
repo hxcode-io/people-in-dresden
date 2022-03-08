@@ -16,44 +16,35 @@
           </div>
         </div>
         <div class="header-navigation flex justify-center items-center absolute bottom-5 w-full">
-<!--          <div class="navigation-group font-marc md:block hidden">-->
-<!--            <a href="">Team</a>-->
-<!--          </div>-->
-<!--          <div class="navigation-group font-marc md:block hidden">-->
-<!--            <a href="">Presse</a>-->
-<!--          </div>-->
           <div class="bg-white hover:bg-dd cursor-pointer h-12 w-12  flex items-center justify-center rounded-full " @click="scroll">
             <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9.83265 12.5968L0.343249 3.1073C-0.114417 2.64963 -0.114417 1.90764 0.343249 1.45003L1.45004 0.343238C1.90692 -0.113646 2.6474 -0.114526 3.10536 0.341285L10.6613 7.86184L18.2172 0.341285C18.6752 -0.114526 19.4157 -0.113646 19.8725 0.343238L20.9793 1.45003C21.437 1.90769 21.437 2.64968 20.9793 3.1073L11.49 12.5968C11.0323 13.0544 10.2903 13.0544 9.83265 12.5968Z" fill="#333333"/>
             </svg>
           </div>
-<!--          <div class="navigation-group font-marc md:block hidden">-->
-<!--            <a href="">Mission</a>-->
-<!--          </div>-->
-<!--          <div class="navigation-group font-marc md:block hidden">-->
-<!--            <a href="">Stadt</a>-->
-<!--          </div>-->
         </div>
       </div>
     </div>
     <transition name="fade" mode="out-in">
-      <div class="fixed-nav fixed z-50 top-0 w-full bg-white py-1" v-if="fixedHeader">
-        <div class="flex justify-between container mx-auto px-12">
-          <div class="font-marc font-bold items-center flex">
+      <div class="fixed-nav fixed z-50 top-0 w-full bg-white" v-if="fixedHeader">
+
+        <div class="flex justify-between container mx-auto px-12 sm:py-0 py-2">
+          <div class="font-marc font-bold items-center flex md:w-1/3">
             <button class="btn font-bold uppercase" @click="goToAbout">
               About
             </button>
           </div>
-          <div ref="title" class="hidden lg:block ml-16">
+          <div ref="title" class="hidden lg:block md:w-1/3">
             <h1 class="text-center ">People in Dresden</h1>
           </div>
-          <div class="flex items-center justify-end">
-            <div class="font-marc mr-3">
+          <div class="flex items-center justify-end md:w-1/3">
+            <div class="mr-3">
               <button @click="filterOpen=!filterOpen"
-                      class="btn rounded uppercase font-bold h-" 
+                      class="btn rounded uppercase font-bold flex items-center" 
                       :class="filterOpen?'btn-dd':''">
-                <!-- <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc.<path d="M96 32C96 14.33 110.3 0 128 0C145.7 0 160 14.33 160 32V64H288V32C288 14.33 302.3 0 320 0C337.7 0 352 14.33 352 32V64H400C426.5 64 448 85.49 448 112V160H0V112C0 85.49 21.49 64 48 64H96V32zM448 464C448 490.5 426.5 512 400 512H48C21.49 512 0 490.5 0 464V192H448V464z"/></svg> -->
                 <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M152 64H296V24C296 10.75 306.7 0 320 0C333.3 0 344 10.75 344 24V64H384C419.3 64 448 92.65 448 128V448C448 483.3 419.3 512 384 512H64C28.65 512 0 483.3 0 448V128C0 92.65 28.65 64 64 64H104V24C104 10.75 114.7 0 128 0C141.3 0 152 10.75 152 24V64zM48 448C48 456.8 55.16 464 64 464H384C392.8 464 400 456.8 400 448V192H48V448z"/></svg>
+                <span class="pl-1" v-if="yearsFilter.length > 0 || monthsFilter.length > 0">
+                  ({{yearsFilter.length + monthsFilter.length}})
+                </span>
               </button>
             </div>
             <div class="language font-marc">
@@ -67,7 +58,7 @@
           </div>
         </div>
         <!-- <transition name="fade" mode="in-out"> -->
-          <div class="bg-gray-100 filter-container mt-2 md:mt-0" v-if="filterOpen">
+          <div class="bg-gray-100 filter-container" v-if="filterOpen">
             <div class="border-t-8 border-dd mx-auto container px-12 py-6 h-full bg-white">
               <div class="mb-6">
                 <I18n :en="'1534 Entries'" :de="'1534 Einträge'"/>
@@ -79,7 +70,7 @@
                   </h2>
                   <a class="text-dd text-sm cursor-pointer" 
                       v-if="yearsFilter.length > 0"
-                      @click="yearsFilter = []">
+                      @click="resetYears">
                     <I18n :en="'Remove filter'" :de="'Jahresfilter löschen'"/>    
                   </a>
                 </div>
@@ -103,7 +94,7 @@
                   </h2>
                   <a class="text-dd text-sm cursor-pointer"
                      v-if="monthsFilter.length > 0"
-                     @click="monthsFilter = []">
+                     @click="resetMonths">
                     <I18n :en="'Remove filter'" :de="'Monatsfilter löschen'"/>    
                   </a>
                 </div>                
@@ -125,12 +116,15 @@
         <!-- </transition> -->
       </div>
     </transition>
-    <div class="container mx-auto px-12" ref="container">
+    <div class="container puffer mx-auto px-12" ref="container">
       <vue-masonry-wall v-if="showMasonry" :key="masonryKey" :items="items" :options="options" @append="append">
         <template v-slot:default="{item}">
           <interview-card :interview="item" @click="openModal(item)"/>
         </template>
       </vue-masonry-wall>
+      <div class="pt-32 flex justify-center text-xl" v-if="items.length === 0">
+        <I18n en="No Entries available" de="Keine Einträge vorhanden" />
+      </div>
     </div>
     <router-view/>
   </div>
@@ -189,6 +183,15 @@ export default {
       return this.$store.state.lang
     }
   },
+  watch: {
+    filterOpen(newVal) {
+      if(newVal) {
+        document.documentElement.classList.add('overflow-hidden')
+      } else {
+        document.documentElement.classList.remove('overflow-hidden')
+      }
+    }
+  },
   mounted() {
     console.log("Mounted app")
     this.showMasonry = true;
@@ -225,6 +228,7 @@ export default {
       });
     },
     openModal(interview) {
+      if(this.filterOpen) this.filterOpen = false;
       console.log("Open modal ", interview)
       document.body.classList.add('overflow-hidden')
       this.$router.push('/interview/' + interview.id);
@@ -275,13 +279,20 @@ export default {
       }
       this.applyFilter();
     },
+    resetYears() {
+      this.yearsFilter = [];
+      this.applyFilter();
+    },
+    resetMonths() {
+      this.monthsFilter = [];
+      this.applyFilter();
+    },
     applyFilter() {
       this.showMasonry = false;
       this.items.splice(0, this.items.length); // Empty array
       this.masonryKey = this.masonryKey + 1; // New key means recreate the vue component
       this.scroll();
       this.showMasonry = true;
-
     }
   }
 }
@@ -354,5 +365,9 @@ export default {
   .btn {
     margin-bottom: 2px;
   }
+}
+
+.puffer {
+  min-height: 120vh;
 }
 </style>
