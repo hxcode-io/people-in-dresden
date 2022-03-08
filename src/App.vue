@@ -126,7 +126,7 @@
       </div>
     </transition>
     <div class="container mx-auto px-12" ref="container">
-      <vue-masonry-wall :items="items" :options="options" @append="append">
+      <vue-masonry-wall v-if="showMasonry" :key="masonryKey" :items="items" :options="options" @append="append">
         <template v-slot:default="{item}">
           <interview-card :interview="item" @click="openModal(item)"/>
         </template>
@@ -171,6 +171,8 @@ export default {
           1: 30
         },
       },
+      showMasonry: false,
+      masonryKey: 0,
       items: [],
       running: true, // initial value is 'true', this prevents a call from masonry component before mounted is called
       filterOpen: false,
@@ -189,23 +191,33 @@ export default {
   },
   mounted() {
     console.log("Mounted app")
+    this.showMasonry = true;
     this.running = false;
     this.append();
     this.observeHeader();
     document.addEventListener('keyup', (e) => {
-      if (e.code === "Escape" && this.$router.currentRoute.name !== "Home") {
-        this.$router.push('/');
+      if (e.code === "Escape") {
+        if (this.$router.currentRoute.name !== "Home") {
+          this.$router.push('/');
+          return;
+        }
+        if (this.filterOpen) {
+          this.filterOpen = false;
+        }
       }
     });
     this.$plausible.trackPageview();
   },
   methods: {
     append() {
+      if (this.running) {
+        console.log("Append is running")
+        return;
+      }
       console.log("Append")
-      if (this.running) return;
       this.running = true;
       var start = this.items.length;
-      interviewService.getInterviews(start / 25, 25).then(interviews => {
+      interviewService.getInterviews(start / 25, 25, this.yearsFilter, this.monthsFilter).then(interviews => {
         for (let i = 0; i < interviews.length; i++) {
           this.items.push(interviews[i])
         }
@@ -252,6 +264,7 @@ export default {
       } else {
         this.yearsFilter.push(year);
       }
+      this.applyFilter();
     },
     toggleMonth(month) {
       if(this.monthsFilter.includes(month)) {
@@ -260,6 +273,15 @@ export default {
       } else {
         this.monthsFilter.push(month)
       }
+      this.applyFilter();
+    },
+    applyFilter() {
+      this.showMasonry = false;
+      this.items.splice(0, this.items.length); // Empty array
+      this.masonryKey = this.masonryKey + 1; // New key means recreate the vue component
+      this.scroll();
+      this.showMasonry = true;
+
     }
   }
 }
