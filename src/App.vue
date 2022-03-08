@@ -27,7 +27,7 @@
     <transition name="fade" mode="out-in">
       <div class="fixed-nav fixed z-50 top-0 w-full bg-white" v-if="fixedHeader">
 
-        <div class="flex justify-between container mx-auto px-12 sm:py-0 py-2">
+        <div class="flex justify-between container mx-auto sm:px-12 px-6 sm:py-0 py-2">
           <div class="font-marc font-bold items-center flex md:w-1/3">
             <button class="btn font-bold uppercase" @click="goToAbout">
               About
