@@ -38,9 +38,9 @@
           </div>
           <div class="flex items-center justify-end md:w-1/3">
             <div class="mr-3">
-              <button @click="filterOpen=!filterOpen"
+              <button @click="filterOpen =! filterOpen"
                       class="btn rounded uppercase font-bold flex items-center" 
-                      :class="filterOpen?'btn-dd':''">
+                      :class="filterOpen ? 'btn-dd' : ''">
                 <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M152 64H296V24C296 10.75 306.7 0 320 0C333.3 0 344 10.75 344 24V64H384C419.3 64 448 92.65 448 128V448C448 483.3 419.3 512 384 512H64C28.65 512 0 483.3 0 448V128C0 92.65 28.65 64 64 64H104V24C104 10.75 114.7 0 128 0C141.3 0 152 10.75 152 24V64zM48 448C48 456.8 55.16 464 64 464H384C392.8 464 400 456.8 400 448V192H48V448z"/></svg>
                 <span class="pl-1" v-if="yearsFilter.length > 0 || monthsFilter.length > 0">
                   ({{yearsFilter.length + monthsFilter.length}})
@@ -61,17 +61,18 @@
           <div class="bg-gray-100 filter-container" v-if="filterOpen">
             <div class="border-t-8 border-dd mx-auto container px-12 py-6 h-full bg-white">
               <div class="mb-6">
-                <I18n :en="'1534 Entries'" :de="'1534 Einträge'"/>
+                <span>{{ ids.length }}</span>
+                <i18n :en="' Entries'" :de="' Einträge'"/>
               </div>
               <div class="year-filter mb-6">
                 <div class="flex items-center">
                   <h2 class="font-bold uppercase mr-3">
-                    <I18n :en="'Year'" :de="'Jahr'"/>
+                    <i18n :en="'Year'" :de="'Jahr'"/>
                   </h2>
                   <a class="text-dd text-sm cursor-pointer" 
                       v-if="yearsFilter.length > 0"
                       @click="resetYears">
-                    <I18n :en="'Remove filter'" :de="'Jahresfilter löschen'"/>    
+                    <i18n :en="'Remove filter'" :de="'Jahresfilter löschen'"/>
                   </a>
                 </div>
                 <div class="year-buttons">
@@ -90,24 +91,24 @@
               <div class="month-filter">
                 <div class="flex items-center">
                   <h2 class="font-bold uppercase mr-3">
-                    <I18n :en="'Month'" :de="'Monat'"/>    
+                    <i18n :en="'Month'" :de="'Monat'"/>
                   </h2>
                   <a class="text-dd text-sm cursor-pointer"
                      v-if="monthsFilter.length > 0"
                      @click="resetMonths">
-                    <I18n :en="'Remove filter'" :de="'Monatsfilter löschen'"/>    
+                    <i18n :en="'Remove filter'" :de="'Monatsfilter löschen'"/>
                   </a>
                 </div>                
                 <div class="month-buttons">
                   <button class="btn" 
                           v-for="(month, index) in months" :key="index"
                           :class="{
-                            'rounded-l': index===0, 
-                            'rounded-r': index===months.length-1,
+                            'rounded-l': index === 0,
+                            'rounded-r': index === months.length-1,
                             'btn-dd': monthsFilter.includes(month) 
                           }"
                           @click="toggleMonth(month)">
-                    {{lang==='en'?monthsEN[month]:monthsDE[month]}}
+                    {{lang === 'en' ? monthsEN[month] : monthsDE[month]}}
                   </button>
                 </div>
               </div>
@@ -123,7 +124,7 @@
         </template>
       </vue-masonry-wall>
       <div class="pt-32 flex justify-center text-xl" v-if="items.length === 0">
-        <I18n en="No Entries available" de="Keine Einträge vorhanden" />
+        <i18n en="No Entries available" de="Keine Einträge vorhanden" />
       </div>
     </div>
     <router-view/>
@@ -132,11 +133,8 @@
 
 <script>
 import VueMasonryWall from "vue-masonry-wall";
-import {InterviewService} from "@/service/InterviewService";
 import InterviewCard from "@/components/InterviewCard";
 import I18n from "@/components/I18n";
-
-const interviewService = new InterviewService();
 
 export default {
   name: 'Home',
@@ -157,7 +155,6 @@ export default {
       banner: true,
       fixedHeader: false,
       headerObserver: undefined,
-      // sidebarOpen: false,
       options: {
         width: 400,
         padding: {
@@ -167,30 +164,32 @@ export default {
       },
       showMasonry: false,
       masonryKey: 0,
-      items: [],
       running: true, // initial value is 'true', this prevents a call from masonry component before mounted is called
       filterOpen: false,
-      yearsFilter: [],
-      monthsFilter: [],
       years: [2022, 2021, 2020, 2019, 2018, 2017, 2016],
       months: [0,1,2,3,4,5,6,7,8,9,10,11],
       monthsEN: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      monthsDE: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+      monthsDE: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
     }
   },
   computed: {
-    lang() {
-      return this.$store.state.lang
-    }
+    lang() { return this.$store.state.lang },
+    yearsFilter() { return this.$store.state.yearsFilter },
+    monthsFilter() { return this.$store.state.monthsFilter },
+    ids() { return this.$store.state.ids },
+    idsDirty() { return this.$store.state.idsDirty },
+    items() { return this.$store.state.items }
   },
   watch: {
     filterOpen(newVal) {
-      if(newVal) {
+      if (newVal) {
         document.documentElement.classList.add('overflow-hidden')
       } else {
         document.documentElement.classList.remove('overflow-hidden')
       }
-    }
+    },
+    yearsFilter() { this.applyFilter(); },
+    monthsFilter() { this.applyFilter(); }
   },
   mounted() {
     console.log("Mounted app")
@@ -212,23 +211,9 @@ export default {
     this.$plausible.trackPageview();
   },
   methods: {
-    append() {
-      if (this.running) {
-        console.log("Append is running")
-        return;
-      }
-      console.log("Append")
-      this.running = true;
-      var start = this.items.length;
-      interviewService.getInterviews(start / 25, 25, this.yearsFilter, this.monthsFilter).then(interviews => {
-        for (let i = 0; i < interviews.length; i++) {
-          this.items.push(interviews[i])
-        }
-        this.running = false;
-      });
-    },
+    append() { this.$store.dispatch('append'); },
     openModal(interview) {
-      if(this.filterOpen) this.filterOpen = false;
+      if (this.filterOpen) this.filterOpen = false;
       console.log("Open modal ", interview)
       document.body.classList.add('overflow-hidden')
       this.$router.push('/interview/' + interview.id);
@@ -262,34 +247,19 @@ export default {
       this.headerObserver.observe(this.$refs['headerTitle']);
     },
     toggleYear(year) {
-      if(this.yearsFilter.includes(year)) {
-        const yearIndex = this.yearsFilter.findIndex(y => y === year);
-        this.yearsFilter.splice(yearIndex, 1)
-      } else {
-        this.yearsFilter.push(year);
-      }
-      this.applyFilter();
+      this.$store.commit('toggleYear', year);
     },
     toggleMonth(month) {
-      if(this.monthsFilter.includes(month)) {
-        const monthIndex = this.monthsFilter.findIndex(m => m === month);
-        this.monthsFilter.splice(monthIndex, 1)
-      } else {
-        this.monthsFilter.push(month)
-      }
-      this.applyFilter();
+      this.$store.commit('toggleMonth', month);
     },
     resetYears() {
-      this.yearsFilter = [];
-      this.applyFilter();
+      this.$store.commit('resetYears');
     },
     resetMonths() {
-      this.monthsFilter = [];
-      this.applyFilter();
+      this.$store.commit('resetMonths');
     },
     applyFilter() {
       this.showMasonry = false;
-      this.items.splice(0, this.items.length); // Empty array
       this.masonryKey = this.masonryKey + 1; // New key means recreate the vue component
       this.scroll();
       this.showMasonry = true;
