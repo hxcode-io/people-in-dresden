@@ -1,6 +1,6 @@
 <template>
-  <div class="interview transform transition duration-500 hover:scale-105" @click="$emit('click')">
-    <img class="image" :src="interview.imageUrl"/>
+  <div v-if="interview" class="interview transform transition duration-500 hover:scale-105" @click="$emit('click')">
+    <img class="image" v-if="interview" :src="interview.imageUrl"/>
     <div class="text">
       {{ text }}
       <div class="date">{{ interview.published_at.toLocaleDateString(localeForDate, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</div>

@@ -146,10 +146,7 @@ export default {
       bannerStyle: {
         'height': '100vh',
         backgroundImage: `url('./kulturpalast.jpeg')`,
-        // backgroundRepeat: 'no-repeat',
-        // backgroundPosition: 'center',
         backgroundSize: 'cover',
-        // backgroundAttachment: 'fixed',
         display: 'block'
       },
       banner: true,
@@ -209,9 +206,14 @@ export default {
       }
     });
     this.$plausible.trackPageview();
+    setInterval(() => {
+      this.$store.dispatch('tick');
+    }, 100)
   },
   methods: {
-    append() { this.$store.dispatch('append'); },
+    append() {
+      this.$store.dispatch('append');
+    },
     openModal(interview) {
       if (this.filterOpen) this.filterOpen = false;
       console.log("Open modal ", interview)

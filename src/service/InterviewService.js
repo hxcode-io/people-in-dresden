@@ -5,13 +5,13 @@ export class InterviewService {
   URL = "https://people.hxcode.io";
 
   getIds(yearsFilter, monthsFilter) {
-    console.log("Ids not found, start fetching with axios");
+    console.log("Start fetching Ids with axios");
     return axios.get(this.URL + '/ids.json').then(response => {
-      console.log("Response from ids fetching", response);
       if (response.data !== undefined) {
+        console.log("Response data length", response.data.length);
         let ids = this.filterIds(response.data, yearsFilter, monthsFilter);
         ids = ids.sort((id1, id2) => id2 - id1);
-        console.log("Sort ids finished");
+        console.log("Sort ids finished", ids.length);
         return ids;
       }
       throw new Error("No ids found");

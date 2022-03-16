@@ -10,8 +10,10 @@ export default new Vuex.Store({
       lang: localStorage.lang ? localStorage.lang : 'de',
       yearsFilter: [],
       monthsFilter: [],
+      status: "notInit", // "notInit", "loadingIds", "ready", "loadingInterviews"
+      appendRequested: false,
       ids: [],
-      idsDirty: true,
+      idsDirty: true, // filter is changed, ids must be reloaded
       items: []
     }
   },
@@ -61,21 +63,47 @@ export default new Vuex.Store({
     resetItems(state) {
       state.items.splice(0, state.items.length); // Empty array
     },
+    setStatus(state, status) {
+      state.status = status;
+    },
+    setAppendRequested(state, appendRequested) {
+      state.appendRequested = appendRequested;
+    }
   },
   actions: {
-    async append(context) {
-      console.log("Append in store started")
+    tick(context) {
+      if (context.state.status === "loadingIds" || context.state.status === "loadingInterviews") return;
       const interviewService = new InterviewService();
-      if (context.state.idsDirty) {
-        context.commit("setIds", await interviewService.getIds(context.state.yearsFilter, context.state.monthsFilter));
+
+      if (context.state.status === "notInit" || (context.state.status === "ready" && context.state.idsDirty)) {
+        // Load id list if not init or the filter has changed
+        context.commit("setStatus", "loadingIds");
         context.commit("resetItems");
+        interviewService.getIds(context.state.yearsFilter, context.state.monthsFilter).then(ids => {
+          context.commit("setIds", ids);
+          context.commit("setStatus", "ready");
+        })
+      } else if (context.state.status === "ready" && context.state.appendRequested) {
+        // Load new interviews if append was requested (user has scrolled to th page end)
+
+        // Check if always all interviews loaded
+        if (context.state.items.length === context.state.ids.length) {
+          context.commit("setAppendRequested", false);
+        } else {
+          context.commit("setStatus", "loadingInterviews");
+          const start = context.state.items.length;
+          interviewService.getInterviews(start / 25, 25, context.state.ids).then(items => {
+            context.commit("addItems", items);
+            context.commit("setAppendRequested", false);
+            context.commit("setStatus", "ready");
+          })
+        }
       }
-      const start = context.state.items.length;
-      context.commit(
-          "addItems",
-          await interviewService.getInterviews(start / 25, 25, context.state.ids)
-      )
-    }
+
+    },
+    append(context) {
+      context.commit("setAppendRequested", true);
+    },
   },
   modules: {
   }
