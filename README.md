@@ -1,4 +1,7 @@
-# masonry-3
+# Website for People in Dresden
+
+- See it live: https://peopleindresden.de/
+- See the Facebook-Project of "People in Dresden": https://www.facebook.com/DresdenPeople
 
 ## Project setup
 ```
