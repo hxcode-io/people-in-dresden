@@ -23,6 +23,11 @@ npm run build
 npm run lint
 ```
 
+### Team
+
+- Stefan Urbansky (https://github.com/urbansky)
+- Ahmad Moudallal (https://github.com/ahmadmu)
+
 ### Development notes
 
 - https://medium.com/featurepreneur/set-up-tailwind-css-for-your-vue-js-app-5a8801fd0a55 (Install Tailwind on Vue 2)
