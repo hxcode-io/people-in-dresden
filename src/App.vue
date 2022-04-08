@@ -261,6 +261,7 @@ export default {
       this.$store.commit('resetMonths');
     },
     applyFilter() {
+      console.log("applyFilter")
       this.showMasonry = false;
       this.masonryKey = this.masonryKey + 1; // New key means recreate the vue component
       this.scroll();

@@ -72,6 +72,7 @@ export default new Vuex.Store({
   },
   actions: {
     tick(context) {
+      console.log("Tick, status", context.state.status);
       if (context.state.status === "loadingIds" || context.state.status === "loadingInterviews") return;
       const interviewService = new InterviewService();
 
@@ -93,6 +94,7 @@ export default new Vuex.Store({
           context.commit("setStatus", "loadingInterviews");
           const start = context.state.items.length;
           interviewService.getInterviews(start / 25, 25, context.state.ids).then(items => {
+            console.log("addItems", items.length);
             context.commit("addItems", items);
             context.commit("setAppendRequested", false);
             context.commit("setStatus", "ready");
