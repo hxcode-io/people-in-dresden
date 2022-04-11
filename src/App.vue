@@ -187,7 +187,7 @@ export default {
       }
     },
     yearsFilter() { this.applyFilter(); },
-    monthsFilter() { this.applyFilter(); },
+    monthsFilter() { this.applyFilter(); }
   },
   mounted() {
     console.log("Mounted app")
@@ -213,6 +213,7 @@ export default {
   },
   methods: {
     append() {
+      console.log("Append");
       this.$store.dispatch('append');
     },
     openModal(interview) {

@@ -1,13 +1,12 @@
 <template>
   <div class="masonry-wall" ref="wall" :style="_style.wall" :class="{ready}">
     <div class="masonry-column" v-for="(lane, index) in columns" :key="index" :style="_style.lane">
-
       <div class="masonry-item" v-for="i in lane.indexes" :key="i" :style="_style.item" :ref="`item_${i}`">
         <slot v-bind:item="items[i]" :index="i">{{items[i]}}</slot>
       </div>
 
       <div class="masonry-bottom" ref="bottom" :data-column="index"
-           v-observe-visibility="{callback: (v) => v && _fill(),throttle:_options.throttle}"
+           v-observe-visibility="{callback: (v) => v && _requestMore(),throttle:_options.throttle}"
       />
     </div>
   </div>
@@ -166,6 +165,11 @@ export default {
       }
     },
   },
+  watch: {
+    items() {
+      this.itemsAdded();
+    }
+  },
   methods: {
     /**
      * Redraw masonry
@@ -177,7 +181,7 @@ export default {
       this.cursor = 0
       this.columns.push(..._newColumns(this._columnSize()))
       this.ready = true
-      this._fill()
+      this._requestMore()
     },
 
     /**
@@ -196,23 +200,16 @@ export default {
      *
      * @private internal component use
      */
-    _fill() {
-      // console.log("_fill", this.ready);
+    _requestMore() {
+      console.log("_requestMore");
       if (!this.ready) return
 
+      console.log("cursor, items.length", this.cursor, this.items.length);
       if (this.cursor >= this.items.length) {
+        console.log("call append", this.ready);
         // Request for more items
         this.$emit('append')
-        return
       }
-
-      // Keep filling until no more items
-      this.$nextTick(() => {
-        // console.log("$nextTick");
-        const bottom = maxBy(this.$refs.bottom, (spacer) => spacer.clientHeight || 0)
-        this._addItem(bottom.dataset.column)
-        this._fill()
-      })
     },
 
     /**
@@ -222,13 +219,24 @@ export default {
      * @private internal component use
      */
     _addItem(index) {
-      // console.log("_addItem");
       const column = this.columns[index]
       if (this.items[this.cursor]) {
         column.indexes.push(this.cursor)
         this.cursor++
+        return true;
       }
+      return false;
     },
+
+    async itemsAdded() {
+      let added = true;
+      do {
+        const bottom = maxBy(this.$refs.bottom, (spacer) => spacer.clientHeight || 0)
+        added = this._addItem(bottom.dataset.column)
+        if (added) await this.$nextTick();
+      } while (added)
+    }
+
   }
 }
 </script>
@@ -238,9 +246,9 @@ export default {
   display: flex;
 }
 
-/*.masonry-wall:not(.ready) {*/
-/*  opacity: 0;*/
-/*}*/
+.masonry-wall:not(.ready) {
+  opacity: 0;
+}
 
 .masonry-column {
   flex-grow: 1;
