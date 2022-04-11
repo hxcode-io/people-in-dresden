@@ -174,14 +174,17 @@ export default {
     /**
      * Redraw masonry
      */
-    redraw() {
+    async redraw() {
       // console.log("redraw");
       this.ready = false
       this.columns.splice(0)
       this.cursor = 0
       this.columns.push(..._newColumns(this._columnSize()))
       this.ready = true
-      this._requestMore()
+
+      await this.$nextTick();
+      await this.itemsAdded();
+      // console.log("redraw end");
     },
 
     /**
@@ -219,8 +222,12 @@ export default {
      * @private internal component use
      */
     _addItem(index) {
+      // console.log("_addItem in column", index);
+      // console.log("columns", this.columns);
+      // console.log("cursor", this.cursor);
       const column = this.columns[index]
-      if (this.items[this.cursor]) {
+      // console.log("column", column);
+      if (column !== undefined && this.items[this.cursor]) {
         column.indexes.push(this.cursor)
         this.cursor++
         return true;
@@ -229,12 +236,17 @@ export default {
     },
 
     async itemsAdded() {
-      let added = true;
+      // console.log("itemsAdded start ----------------------------");
+      let added = false;
       do {
         const bottom = maxBy(this.$refs.bottom, (spacer) => spacer.clientHeight || 0)
-        added = this._addItem(bottom.dataset.column)
-        if (added) await this.$nextTick();
+        if (bottom !== undefined) {
+          added = this._addItem(bottom.dataset.column)
+          // With 'await this.$nextTick()' we wait until the DOM is updated, so we can calculate the shortest column
+          if (added) await this.$nextTick();
+        }
       } while (added)
+      // console.log("itemsAdded end +++++++++++++++++++++++++++++++++");
     }
 
   }
