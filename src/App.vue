@@ -118,11 +118,11 @@
       </div>
     </transition>
     <div class="container puffer mx-auto px-12" ref="container">
-      <vue-masonry-wall v-if="showMasonry" :key="masonryKey" :items="items" :options="options" @append="append">
+      <masonry v-if="showMasonry" :key="masonryKey" ref="masonry" :items="items" :options="options" @append="append">
         <template v-slot:default="{item}">
           <interview-card :interview="item" @click="openModal(item)"/>
         </template>
-      </vue-masonry-wall>
+      </masonry>
       <div class="pt-32 flex justify-center text-xl" v-if="items.length === 0">
         <i18n en="No Entries available" de="Keine Einträge vorhanden" />
       </div>
@@ -132,14 +132,15 @@
 </template>
 
 <script>
-import VueMasonryWall from "vue-masonry-wall";
+// import VueMasonryWall from "vue-masonry-wall";
 import InterviewCard from "@/components/InterviewCard";
+import Masonry from "@/components/Masonry";
 import I18n from "@/components/I18n";
 
 export default {
   name: 'Home',
   components: {
-    VueMasonryWall, InterviewCard, I18n
+    Masonry, InterviewCard, I18n
   },
   data() {
     return {
@@ -186,13 +187,13 @@ export default {
       }
     },
     yearsFilter() { this.applyFilter(); },
-    monthsFilter() { this.applyFilter(); }
+    monthsFilter() { this.applyFilter(); },
   },
   mounted() {
     console.log("Mounted app")
     this.showMasonry = true;
     this.running = false;
-    this.append();
+    // this.append();
     this.observeHeader();
     document.addEventListener('keyup', (e) => {
       if (e.code === "Escape") {
