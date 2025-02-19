@@ -1,8 +1,0 @@
-[[headers]]
-  for = "/data/*.json"
-  [headers.values]
-    Content-Type = "application/json"
-[[redirects]]
-  from = "/data/*"
-  to = "/data/:splat"
-  status = 200
