@@ -3,7 +3,7 @@ import axios from "axios";
 export class InterviewService {
 
   // URL = "https://people.hxcode.io";
-  URL = "./data"; // host locally
+  URL = "./data"; // host locally now
 
   getIds(yearsFilter, monthsFilter) {
     console.log("Start fetching Ids with axios");
